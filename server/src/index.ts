@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import type { ApiResponse } from "shared/dist";
 import { drizzle } from "drizzle-orm/libsql";
+import { mockProducts } from "./mock";
 
 export const db = drizzle({
 	connection: {
@@ -25,6 +26,9 @@ export const app = new Hono()
 	};
 
 	return c.json(data, { status: 200 });
-});
+})
+.get('/products', async (c) => {
+	return c.json(mockProducts)
+})
 
 export default app;
