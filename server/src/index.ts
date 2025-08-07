@@ -1,6 +1,6 @@
-import { Hono, type Context, type Next } from 'hono'
+import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import type { ApiResponse, LoginForm, Token } from 'shared/dist'
+import type { ApiResponse, Token } from 'shared/dist'
 import { drizzle } from 'drizzle-orm/libsql'
 import { mockProducts } from './mock'
 import { userInsertSchema, usersTable } from './db/schema'
@@ -9,8 +9,8 @@ import { DrizzleQueryError, eq, or } from 'drizzle-orm'
 import { createUser } from './db/mutations'
 import z from 'zod'
 import { getUserByUsername } from './db/queries'
-import { contextStorage, getContext } from 'hono/context-storage'
 import { verify, sign } from 'hono/jwt'
+import { createMiddleware } from 'hono/factory'
 
 const { JWT_SECRET } = process.env
 
@@ -27,7 +27,7 @@ export const db = drizzle({
   },
 })
 
-const userContext = async (c: Context, next: Next) => {
+const userContext = createMiddleware(async (c, next) => {
   const auth = c.req.header('Authorization')
   if (!auth) {
     c.set('currentUser', null)
@@ -48,17 +48,16 @@ const userContext = async (c: Context, next: Next) => {
     c.set('currentUser', null)
     next()
   }
-}
+})
 
 export const app = new Hono<Variables>()
 
   .use(cors())
 
-  .use(contextStorage())
   .use('/auth/*', userContext)
 
   .get('/auth/page', (c) => {
-    console.log(getContext<Variables>().var.currentUser)
+    console.log(c.get('currentUser'))
     return c.text('You are authorized')
   })
 
