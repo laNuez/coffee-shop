@@ -1,13 +1,17 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import type { ApiResponse } from "shared/dist";
+import type { ApiResponse, LoginForm, Token } from "shared/dist";
 import { drizzle } from "drizzle-orm/libsql";
 import { mockProducts } from "./mock";
 import { userInsertSchema, usersTable } from './db/schema'
 import bcrypt from 'bcrypt'
-import { DrizzleQueryError, eq, or } from 'drizzle-orm'
+import { ConsoleLogWriter, DrizzleQueryError, eq, or } from 'drizzle-orm'
 import { createUser } from './db/mutations'
 import z from 'zod'
+import { getUserByUsername } from "./db/queries";
+import jwt from 'jsonwebtoken'
+
+const {JWT_SECRET} = process.env
 
 export const db = drizzle({
   connection: {
@@ -78,6 +82,40 @@ export const app = new Hono()
       console.log(error)
       throw error
     }
+  })
+
+  .post('/login', async (c) => {
+    const body = await c.req.json()
+    const parseLoginForm = z.object({
+      username: z.string(),
+      password: z.string()
+    })
+
+    const { success, data, error } = parseLoginForm.safeParse(body)
+    if (!success) {
+      c.status(400)
+      return c.json({error: 'invalid request'})
+    }
+
+    const [user] = await getUserByUsername(data.username)
+    if (!user) {
+      c.status(400)
+      return c.json({error: 'wrong username or password'})
+    }
+
+    const correct = await bcrypt.compare(data.password, user.password)
+    if (!correct) {
+      c.status(400)
+      return c.json({error: 'wrong username or password'})
+    }
+    
+    const {password, ...remaining} = user
+
+    const accessToken = jwt.sign( {...remaining}, JWT_SECRET!, { expiresIn: '1h'})
+    const resData: Token = {
+      accessToken
+    }
+    return c.json(resData)
   })
 
 export default app;

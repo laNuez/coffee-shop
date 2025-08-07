@@ -20,6 +20,7 @@
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
     "@types/bun": "latest",
+    "@types/jsonwebtoken": "^9.0.10",
     "drizzle-kit": "^0.31.4",
     "tsx": "^4.20.3"
   }
