@@ -9,11 +9,16 @@
   },
   "dependencies": {
     "@libsql/client": "^0.15.10",
+    "bcrypt": "^6.0.0",
     "drizzle-orm": "^0.44.4",
+    "drizzle-zod": "^0.8.3",
     "hono": "^4.7.11",
-    "shared": "workspace:*"
+    "jsonwebtoken": "^9.0.2",
+    "shared": "workspace:*",
+    "zod": "^4.0.15"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/bun": "latest",
     "drizzle-kit": "^0.31.4",
     "tsx": "^4.20.3"
