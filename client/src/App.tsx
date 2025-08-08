@@ -4,10 +4,7 @@ import { Route, Routes } from 'react-router'
 import SignUpPage from './pages/RegisterPage'
 import HomePage from './pages/HomePage'
 import DefaultLayout from './components/layout/DefaultLayout'
-import { Product } from './components/Product'
-import { ProductsGrid } from './components/ProductsGrid'
-
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000'
+import { SERVER_URL } from './util/constants'
 
 type ResponseType = Awaited<ReturnType<typeof client.hello.$get>>;
 type ProductsType = Awaited<ReturnType<typeof client.products.$get>>
@@ -42,17 +39,11 @@ function App() {
     <div>
       <DefaultLayout>
         <Routes>
-          <Route index element={<HomePage />} />
-          <Route path="register" element={<SignUpPage />} />
+          <Route index element={<HomePage products={products} />} />
+          <Route path="register" element={<SignUpPage />}  />
         </Routes>
       </DefaultLayout>
       {data?.message}
-      <h2 id='coffee'>Featured</h2>
-      <ProductsGrid>
-        {products && products.filter((p)=> p.category === 'Beans').map(p => (
-          <Product product={p} />
-        ))}
-      </ProductsGrid>
     </div>
   )
 }
