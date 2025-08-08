@@ -1,4 +1,5 @@
 import { Product as ProductType } from 'shared'
+import { formatCents } from '../util/util'
 
 interface ProductProps {
   product: ProductType
@@ -6,14 +7,6 @@ interface ProductProps {
 
 export const Product = (props: ProductProps) => {
   const { description, name, price } = props.product
-
-  const formatCents = (cents: number) => {
-    const dollar = cents / 100
-    return Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'usd',
-    }).format(dollar)
-  }
 
   return (
     <div className="card w-96 bg-base-200 hover:shadow-sm">

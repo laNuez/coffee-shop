@@ -5,6 +5,7 @@ import SignUpPage from './pages/RegisterPage'
 import HomePage from './pages/HomePage'
 import DefaultLayout from './components/layout/DefaultLayout'
 import { SERVER_URL } from './util/constants'
+import CartPage from './pages/CartPage'
 
 type ResponseType = Awaited<ReturnType<typeof client.hello.$get>>;
 type ProductsType = Awaited<ReturnType<typeof client.products.$get>>
@@ -41,6 +42,7 @@ function App() {
         <Routes>
           <Route index element={<HomePage products={products} />} />
           <Route path="register" element={<SignUpPage />}  />
+          <Route path="cart" element={<CartPage products={products?.slice(0, 3)} />}  />
         </Routes>
       </DefaultLayout>
       {data?.message}
