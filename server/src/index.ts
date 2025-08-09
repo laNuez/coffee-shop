@@ -25,6 +25,7 @@ export const db = drizzle({
     url: process.env.TURSO_DATABASE_URL!,
     authToken: process.env.TURSO_AUTH_TOKEN!,
   },
+  casing: 'snake_case',
 })
 
 const userContext = createMiddleware(async (c, next) => {

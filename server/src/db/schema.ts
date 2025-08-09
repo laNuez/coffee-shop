@@ -1,8 +1,9 @@
+import { sql } from 'drizzle-orm'
 import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import type z from 'zod'
 export const productsTable = sqliteTable('products_table', {
-  id: int().primaryKey(),
+  id: text().primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: text().notNull(),
   price: int().notNull(),
   category: text().notNull(),
@@ -10,17 +11,42 @@ export const productsTable = sqliteTable('products_table', {
 })
 
 export const usersTable = sqliteTable('users_table', {
-  id: int().primaryKey(),
+  id: text().primaryKey().$defaultFn(() => crypto.randomUUID()),
   username: text().notNull().unique(),
   email: text().unique().notNull(),
   password: text().notNull(),
 })
 
+export const cartItemsTable = sqliteTable('cart_items_table', {
+  id: text().primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text().references(() => usersTable.id),
+  productId: text().references(() => productsTable.id),
+  quantity: int().default(1),
+})
+
+export const ordersTable = sqliteTable('orders_table', {
+  id: text().primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text().references(() => usersTable.id),
+  totalAmount: int().notNull(),
+  status: text({
+    enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
+  }).default('pending'),
+  createdAt: text().default(sql`(current_timestamp)`)
+})
+
+export const orderItemsTable = sqliteTable('order_items_table', {
+  id: text().primaryKey().$defaultFn(() => crypto.randomUUID()),
+  orderId: text().references(() => ordersTable.id),
+  productId: text().references(() => productsTable.id),
+  quantity: int().default(1),
+  price: int().notNull(),
+})
+
 export const userSelectSchema = createSelectSchema(usersTable)
 export const userInsertSchema = createInsertSchema(usersTable, {
-  email: (schema) => schema.email(),
+  email: (schema) => schema.email().nonoptional(),
   username: (schema) => schema.min(4).max(12),
-  password: (schema) => schema.min(6).max(100)
+  password: (schema) => schema.min(6).max(100),
 }).omit({
   id: true,
 })
