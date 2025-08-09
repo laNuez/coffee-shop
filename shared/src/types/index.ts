@@ -1,6 +1,6 @@
 export type ApiResponse = {
-  message: string;
-  success: true;
+  message: string
+  success: boolean
 }
 
 export interface Product {

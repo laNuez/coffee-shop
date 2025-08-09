@@ -1,4 +1,4 @@
-import { sql } from 'drizzle-orm'
+import { relations, sql } from 'drizzle-orm'
 import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import type z from 'zod'
@@ -52,3 +52,18 @@ export const userInsertSchema = createInsertSchema(usersTable, {
 })
 
 export type insertUser = z.infer<typeof userInsertSchema>
+
+export const cartItemsRelations = relations(cartItemsTable, ({ one }) => ({
+  customer: one(usersTable, {
+    fields: [cartItemsTable.userId],
+    references: [usersTable.id],
+  }),
+  product: one(productsTable, {
+    fields: [cartItemsTable.productId],
+    references: [productsTable.id],
+  }),
+}))
+
+export const usersRelations = relations(usersTable, ({ many }) => ({
+  cart: many(cartItemsTable),
+}))

@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import type { ApiResponse, Token } from 'shared/dist'
+import type { ApiResponse, Token } from 'shared'
 import { drizzle } from 'drizzle-orm/libsql'
 import { mockProducts } from './mock'
 import { userInsertSchema, usersTable } from './db/schema'
@@ -8,15 +8,17 @@ import bcrypt from 'bcrypt'
 import { DrizzleQueryError, eq, or } from 'drizzle-orm'
 import { createUser } from './db/mutations'
 import z from 'zod'
-import { getUserByUsername } from './db/queries'
+import { getCartByUserId, getUserByUsername } from './db/queries'
 import { verify, sign } from 'hono/jwt'
 import { createMiddleware } from 'hono/factory'
-
+import type { UserFromToken } from './types'
+import * as schema from './db/schema'
+import { JwtTokenExpired } from 'hono/utils/jwt/types'
 const { JWT_SECRET } = process.env
 
 type Variables = {
   Variables: {
-    currentUser: null | { username: string }
+    currentUser: null | UserFromToken
   }
 }
 
@@ -26,6 +28,7 @@ export const db = drizzle({
     authToken: process.env.TURSO_AUTH_TOKEN!,
   },
   casing: 'snake_case',
+  schema,
 })
 
 const userContext = createMiddleware(async (c, next) => {
@@ -45,7 +48,9 @@ const userContext = createMiddleware(async (c, next) => {
     c.set('currentUser', user)
     return next()
   } catch (error) {
-    console.log(error)
+    if (!(error instanceof JwtTokenExpired)) {
+      console.log(error)
+    }
     c.set('currentUser', null)
     next()
   }
@@ -55,12 +60,7 @@ export const app = new Hono<Variables>()
 
   .use(cors())
 
-  .use('/auth/*', userContext)
-
-  .get('/auth/page', (c) => {
-    console.log(c.get('currentUser'))
-    return c.text('You are authorized')
-  })
+  .use('/*', userContext)
 
   .get('/', (c) => {
     return c.text('Hello Hono!')
@@ -156,6 +156,22 @@ export const app = new Hono<Variables>()
       accessToken,
     }
     return c.json(resData)
+  })
+
+  .get('/cart', async (c) => {
+    const user = c.get('currentUser')
+    const data: ApiResponse = {
+      message: 'Must be logged in',
+      success: false,
+    }
+    if (!user) {
+      return c.json(data, 401)
+    }
+
+    const cart = await getCartByUserId(user.id)
+    if (!cart) return c.status(404)
+
+    return c.json({ cart })
   })
 
 export default app
