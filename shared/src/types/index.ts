@@ -4,7 +4,7 @@ export type ApiResponse = {
 }
 
 export interface Product {
-  id: number
+  id: string
   name: string
   price: number
   category: string

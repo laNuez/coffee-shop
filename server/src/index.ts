@@ -137,20 +137,20 @@ export const app = new Hono<Variables>()
 
     const { success, data, error } = parseLoginForm.safeParse(body)
     if (!success) {
-      c.status(400)
-      return c.json({ error: 'invalid request' })
+      return c.json(
+        { error: 'invalid request', errors: z.treeifyError(error) },
+        400
+      )
     }
 
     const [user] = await getUserByUsername(data.username)
     if (!user) {
-      c.status(400)
-      return c.json({ error: 'wrong username or password' })
+      return c.json({ error: 'wrong username or password' }, 401)
     }
 
     const correct = await bcrypt.compare(data.password, user.password)
     if (!correct) {
-      c.status(400)
-      return c.json({ error: 'wrong username or password' })
+      return c.json({ error: 'wrong username or password' }, 401)
     }
 
     const { password, ...remaining } = user
@@ -161,7 +161,7 @@ export const app = new Hono<Variables>()
     const resData: Token = {
       accessToken,
     }
-    return c.json(resData)
+    return c.json(resData, 200)
   })
 
   .get('/cart', async (c) => {

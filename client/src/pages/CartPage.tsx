@@ -8,8 +8,8 @@ interface CartPageProps {
 }
 
 interface ShoppingCart {
-  userId: number
-  productId: number
+  userId: string
+  productId: string
   quantity: number
   price: number
 }
@@ -19,7 +19,7 @@ const CartPage = (props: CartPageProps) => {
   // mock shopping cart
   const shoppingCart: ShoppingCart[] = props.products?.map((p) => {
     return {
-      userId: 1,
+      userId: "1",
       productId: p.id,
       price: p.price,
       quantity: Math.ceil(Math.random() * 4),
@@ -30,7 +30,7 @@ const CartPage = (props: CartPageProps) => {
   const productsInCart = props.products?.filter((p) =>
     shoppingCart.find((item) => p.id === item.productId)
   )
-  const getProduct = (id: number) =>
+  const getProduct = (id: string) =>
     shoppingCart.find((item) => item.productId === id)!
   return (
     <div className="flex w-screen mt-2 justify-center bg-base-200">
