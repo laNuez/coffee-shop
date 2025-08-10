@@ -3,12 +3,17 @@ import { cors } from 'hono/cors'
 import type { ApiResponse, Token } from 'shared'
 import { drizzle } from 'drizzle-orm/libsql'
 import { mockProducts } from './mock'
-import { userInsertSchema, usersTable } from './db/schema'
+import { userInsertSchema, usersTable, productInsertSchema } from './db/schema'
 import bcrypt from 'bcrypt'
 import { DrizzleQueryError, eq, or } from 'drizzle-orm'
-import { createUser } from './db/mutations'
+import { createProduct, createUser, deleteProduct } from './db/mutations'
 import z from 'zod'
-import { getCartByUserId, getUserByUsername } from './db/queries'
+import {
+  getCartByUserId,
+  getProductById,
+  getProducts,
+  getUserByUsername,
+} from './db/queries'
 import { verify, sign } from 'hono/jwt'
 import { createMiddleware } from 'hono/factory'
 import type { UserFromToken } from './types'
@@ -75,7 +80,8 @@ export const app = new Hono<Variables>()
     return c.json(data, { status: 200 })
   })
   .get('/products', async (c) => {
-    return c.json(mockProducts)
+    const products = await getProducts()
+    return c.json(products)
   })
 
   .post('/register', async (c) => {
@@ -169,9 +175,38 @@ export const app = new Hono<Variables>()
     }
 
     const cart = await getCartByUserId(user.id)
-    if (!cart) return c.status(404)
+    if (!cart) return c.notFound()
 
     return c.json({ cart })
+  })
+  // TODO: implement auth
+  .post('/products', async (c) => {
+    const body = await c.req.json()
+    const { data, success, error } = productInsertSchema.safeParse(body)
+
+    if (!success) return c.json({ error: z.treeifyError(error) }, 400)
+
+    const [product] = await createProduct(data)
+    if (!product) return c.json({ error: 'something went wrong' }, 500)
+
+    return c.json(product)
+  })
+
+  .delete('/products/:id', async (c) => {
+    const id = c.req.param('id')
+    const { rowsAffected } = await deleteProduct(id)
+
+    if (!rowsAffected) return c.notFound()
+
+    return c.body(null, 204)
+  })
+
+  .get('/products/:id', async (c) => {
+    const id = c.req.param('id')
+    const product = await getProductById(id)
+    if (!product) return c.notFound()
+
+    return c.json(product)
   })
 
 export default app

@@ -19,3 +19,5 @@ export interface LoginForm {
   username: string
   password: string
 }
+
+export type ProductForm = Omit<Product, 'id'>

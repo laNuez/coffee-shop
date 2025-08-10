@@ -51,6 +51,17 @@ export const userInsertSchema = createInsertSchema(usersTable, {
   id: true,
 })
 
+export const productInsertSchema = createInsertSchema(productsTable, {
+  category: (schema) => schema.min(3),
+  price: (schema) => schema.min(100),
+  description: (schema) => schema.min(3).max(3000),
+  name: (schema) => schema.min(6),
+}).omit({
+  id: true
+})
+
+export type insertProduct = z.infer<typeof productInsertSchema>
+
 export type insertUser = z.infer<typeof userInsertSchema>
 
 export const cartItemsRelations = relations(cartItemsTable, ({ one }) => ({
