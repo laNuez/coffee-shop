@@ -19,6 +19,7 @@ import { createMiddleware } from 'hono/factory'
 import type { UserFromToken } from './types'
 import * as schema from './db/schema'
 import { JwtTokenExpired } from 'hono/utils/jwt/types'
+import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
 const { JWT_SECRET } = process.env
 
 type Variables = {
@@ -37,33 +38,37 @@ export const db = drizzle({
 })
 
 const userContext = createMiddleware(async (c, next) => {
-  const auth = c.req.header('Authorization')
-  if (!auth) {
-    c.set('currentUser', null)
-    return next()
-  }
-  const token = auth.split('Bearer ')[1]
+  const token = getCookie(c, 'access_token')
+
   if (!token) {
     c.set('currentUser', null)
-    return next()
+    await next()
+    return
   }
 
   try {
     const user = await verify(token, JWT_SECRET!)
     c.set('currentUser', user)
-    return next()
+    await next()
+    return
   } catch (error) {
     if (!(error instanceof JwtTokenExpired)) {
       console.log(error)
     }
     c.set('currentUser', null)
-    next()
+    await next()
+    return
   }
 })
 
 export const app = new Hono<Variables>()
 
-  .use(cors())
+  .use(
+    cors({
+      origin: 'http://localhost:5173',
+      credentials: true,
+    })
+  )
 
   .use('/*', userContext)
 
@@ -161,6 +166,16 @@ export const app = new Hono<Variables>()
     const resData: Token = {
       accessToken,
     }
+
+    setCookie(c, 'access_token', accessToken, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: true,
+      maxAge: 1000 * 60 * 60,
+      domain: 'localhost'
+    })
+
     return c.json(resData, 200)
   })
 
@@ -175,7 +190,7 @@ export const app = new Hono<Variables>()
     }
 
     const cart = await getCartByUserId(user.id)
-    if (!cart) return c.notFound()
+    if (!cart) return c.json({ error: 'not found' }, 404)
 
     return c.json({ cart })
   })
@@ -196,7 +211,7 @@ export const app = new Hono<Variables>()
     const id = c.req.param('id')
     const { rowsAffected } = await deleteProduct(id)
 
-    if (!rowsAffected) return c.notFound()
+    if (!rowsAffected) return c.json({ error: 'not found' }, 404)
 
     return c.body(null, 204)
   })
@@ -204,9 +219,27 @@ export const app = new Hono<Variables>()
   .get('/products/:id', async (c) => {
     const id = c.req.param('id')
     const product = await getProductById(id)
-    if (!product) return c.notFound()
+    if (!product) return c.json({ error: 'not found' }, 404)
 
     return c.json(product)
   })
 
+  .get('/me', (c) => {
+    const user = c.get('currentUser')
+    if (!user) return c.json(null, 401)
+
+    return c.json(user, 200)
+  })
+  
+  .get('/logout', (c) => {
+    const xd = deleteCookie(c, 'access_token', {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: true,
+      maxAge: 1000 * 60 * 60,
+      domain: 'localhost'
+    })
+    return c.body(null, 200)
+  })
 export default app
