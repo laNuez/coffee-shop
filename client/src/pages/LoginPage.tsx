@@ -1,14 +1,15 @@
 import { FormEvent } from 'react'
 import { useInput } from '../hooks/useInput'
-import { hcWithType } from 'server/dist/client'
-import { Link } from 'react-router'
-import { SERVER_URL } from '../util/constants'
-
-const client = hcWithType(SERVER_URL)
+import { Link, useNavigate } from 'react-router'
+import { useUserStore } from '../stores/userStore'
+import { client } from '../lib/hono'
 
 const LoginPage = () => {
   const username = useInput('')
   const password = useInput('', 'password')
+
+  const fetchUser = useUserStore(state => state.fetchUser)
+  const navigate = useNavigate()
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
@@ -21,9 +22,8 @@ const LoginPage = () => {
       },
     })
     if (!res.ok) return console.log(res)
-    
-    const data = await res.json()
-    console.log(data)
+    navigate('/')
+    fetchUser()
   }
   return (
     <div className="flex justify-center">

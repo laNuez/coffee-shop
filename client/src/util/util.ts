@@ -5,3 +5,10 @@ export const formatCents = (cents: number) => {
     currency: 'usd',
   }).format(dollar)
 }
+
+export class AuthError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'AuthError'
+  }
+}

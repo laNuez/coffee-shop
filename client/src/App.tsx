@@ -1,21 +1,32 @@
 import { useEffect, useState } from 'react'
-import { hcWithType } from 'server/dist/client'
-import { Route, Routes } from 'react-router'
+import { Route, Routes, useNavigate } from 'react-router'
 import SignUpPage from './pages/RegisterPage'
 import HomePage from './pages/HomePage'
 import DefaultLayout from './components/layout/DefaultLayout'
-import { SERVER_URL } from './util/constants'
 import CartPage from './pages/CartPage'
 import LoginPage from './pages/LoginPage'
+import { useFetchUser } from './stores/userStore'
+import { client } from './lib/hono'
+import { AuthError } from './util/util'
 
-type ResponseType = Awaited<ReturnType<typeof client.hello.$get>>;
+type ResponseType = Awaited<ReturnType<typeof client.hello.$get>>
 type ProductsType = Awaited<ReturnType<typeof client.products.$get>>
-
-const client = hcWithType(SERVER_URL);
 
 function App() {
   const [data, setData] = useState<Awaited<ReturnType<ResponseType["json"]>> | undefined>()
   const [products, setProducts] = useState<Awaited<ReturnType<ProductsType["json"]>> | undefined>()
+
+  const fetchUser = useFetchUser()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    fetchUser().catch((error) => {
+      if (error instanceof AuthError) {
+        navigate('/login')
+      }
+      console.error(error)
+    })
+  }, [fetchUser, navigate])
 
   useEffect(() => {
     const ping = async () => {
