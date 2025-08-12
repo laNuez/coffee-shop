@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm"
-import { db } from ".."
+import { db } from "./client"
 import { cartItemsTable, productsTable, usersTable } from './schema'
 
 export const getUserByUsername = async (name: string) => {

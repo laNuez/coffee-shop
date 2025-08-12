@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm'
-import { db } from '../index'
+import { db } from './client'
 import {
   productsTable,
   usersTable,

@@ -8,3 +8,9 @@ export interface UserFromToken {
 }
 
 export type UserWithCart = Awaited<ReturnType<typeof getCartByUserId>>
+
+export type Variables = {
+  Variables: {
+    currentUser: null | UserFromToken
+  }
+}
