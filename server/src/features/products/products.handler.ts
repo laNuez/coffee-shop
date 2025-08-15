@@ -6,7 +6,7 @@ import z from 'zod'
 
 const app = new Hono()
   // TODO: implement auth
-  .post('/products', async (c) => {
+  .post('/', async (c) => {
     const body = await c.req.json()
     const { data, success, error } = productInsertSchema.safeParse(body)
 
@@ -18,12 +18,12 @@ const app = new Hono()
     return c.json(product)
   })
 
-  .get('/products', async (c) => {
+  .get('/', async (c) => {
     const products = await getProducts()
     return c.json(products)
   })
 
-  .delete('/products/:id', async (c) => {
+  .delete('/:id', async (c) => {
     const id = c.req.param('id')
     const { rowsAffected } = await deleteProduct(id)
 
@@ -32,7 +32,7 @@ const app = new Hono()
     return c.body(null, 204)
   })
 
-  .get('/products/:id', async (c) => {
+  .get('/:id', async (c) => {
     const id = c.req.param('id')
     const product = await getProductById(id)
     if (!product) return c.json({ error: 'not found' }, 404)

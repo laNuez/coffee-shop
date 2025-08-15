@@ -7,6 +7,7 @@ import auth from '@server/features/auth/auth.handler'
 import products from '@server/features/products/products.handler'
 import cart from '@server/features/cart/cart.handler'
 import type { Variables } from './types'
+import { HTTPException } from 'hono/http-exception'
 
 export const app = new Hono<Variables>()
 
@@ -33,7 +34,14 @@ export const app = new Hono<Variables>()
   })
 
   .route('/', auth)
-  .route('/', products)
-  .route('/', cart)
+  .route('/products', products)
+  .route('/cart', cart)
+  .onError((error, c) => {
+    if (error instanceof HTTPException) {
+      return error.getResponse()
+    }
+
+    return c.json({ error: 'Something went wrong' }, 500)
+  })
 
 export default app

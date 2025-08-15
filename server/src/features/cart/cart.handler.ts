@@ -1,13 +1,13 @@
-import { LibsqlError } from '@libsql/client'
 import { addToCart, deleteFromCart, updateCartItem } from '@server/db/mutations'
 import { getCartByUserId, getCartItemById } from '@server/db/queries'
 import { cartItemInsertSchema, cartItemPatchSchema } from '@server/db/schema'
 import { isUniqueConstraintError } from '@server/db/utils'
+import { requireAuth } from '@server/middleware/userContext'
 import type { Variables } from '@server/types'
 import { Hono } from 'hono'
 
 const app = new Hono<Variables>()
-  .get('/cart', async (c) => {
+  .get('/', requireAuth, async (c) => {
     const user = c.get('currentUser')
     if (!user) return c.json({ error: 'log in' }, 403)
 
@@ -17,7 +17,7 @@ const app = new Hono<Variables>()
     return c.json({ cart })
   })
 
-  .post('/cart', async (c) => {
+  .post('/', requireAuth, async (c) => {
     const user = c.get('currentUser')
     if (!user) {
       return c.json({ error: 'log in' }, 403)
@@ -46,7 +46,7 @@ const app = new Hono<Variables>()
     }
   })
 
-  .patch('/cart/:id', async (c) => {
+  .patch('/:id', requireAuth, async (c) => {
     const user = c.get('currentUser')
     if (!user) {
       return c.json({ error: 'log in' }, 403)
@@ -67,7 +67,7 @@ const app = new Hono<Variables>()
     return c.json(row, 200)
   })
 
-  .delete('/cart/:id', async (c) => {
+  .delete('/:id', requireAuth, async (c) => {
     const user = c.get('currentUser')
     if (!user) {
       return c.json({ error: 'log in' }, 403)

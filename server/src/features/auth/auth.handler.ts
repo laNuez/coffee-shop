@@ -10,6 +10,7 @@ import { deleteCookie, setCookie } from 'hono/cookie'
 import type { Variables } from '@server/types'
 import { createUser } from '@server/db/mutations'
 import { ENV } from '@server/env'
+import { requireAuth } from '@server/middleware/userContext'
 
 const app = new Hono<Variables>()
   .post('/register', async (c) => {
@@ -101,8 +102,8 @@ const app = new Hono<Variables>()
 
     return c.json(resData, 200)
   })
-  .get('/logout', (c) => {
-    const xd = deleteCookie(c, 'access_token', {
+  .get('/logout', requireAuth, (c) => {
+    deleteCookie(c, 'access_token', {
       path: '/',
       httpOnly: true,
       sameSite: 'lax',
@@ -112,7 +113,7 @@ const app = new Hono<Variables>()
     })
     return c.body(null, 200)
   })
-  .get('/me', (c) => {
+  .get('/me', requireAuth, (c) => {
     const user = c.get('currentUser')
     if (!user) return c.json(null, 401)
 
