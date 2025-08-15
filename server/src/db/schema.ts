@@ -1,6 +1,6 @@
 import { relations, sql } from 'drizzle-orm'
-import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core'
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
+import { int, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core'
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-zod'
 import type z from 'zod'
 export const productsTable = sqliteTable('products_table', {
   id: text().primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -19,10 +19,12 @@ export const usersTable = sqliteTable('users_table', {
 
 export const cartItemsTable = sqliteTable('cart_items_table', {
   id: text().primaryKey().$defaultFn(() => crypto.randomUUID()),
-  userId: text().references(() => usersTable.id),
-  productId: text().references(() => productsTable.id),
-  quantity: int().default(1),
-})
+  userId: text().references(() => usersTable.id).notNull(),
+  productId: text().references(() => productsTable.id).notNull(),
+  quantity: int().notNull().default(1),
+}, t => [
+  unique().on(t.userId, t.productId)
+])
 
 export const ordersTable = sqliteTable('orders_table', {
   id: text().primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -57,8 +59,24 @@ export const productInsertSchema = createInsertSchema(productsTable, {
   description: (schema) => schema.min(3).max(3000),
   name: (schema) => schema.min(6),
 }).omit({
-  id: true
+  id: true,
 })
+
+export const cartItemInsertSchema = createInsertSchema(cartItemsTable).omit({
+  id: true,
+})
+
+export const cartItemPatchSchema = createUpdateSchema(cartItemsTable, {
+  quantity: schema => schema.min(1)
+}).pick({
+  quantity: true
+}).required({
+  quantity: true  
+})
+
+export type updateCartItem = z.infer<typeof cartItemPatchSchema>
+
+export type insertCartItem = z.infer<typeof cartItemInsertSchema>
 
 export type insertProduct = z.infer<typeof productInsertSchema>
 
