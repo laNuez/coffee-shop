@@ -38,9 +38,9 @@ export const app = new Hono<Variables>()
   .route('/cart', cart)
   .onError((error, c) => {
     if (error instanceof HTTPException) {
-      return error.getResponse()
+      return c.json({ error: error.message }, error.status)
     }
-
+    console.error(error)
     return c.json({ error: 'Something went wrong' }, 500)
   })
 

@@ -11,7 +11,15 @@ import {
 } from './schema'
 
 export const createUser = async (data: insertUser) => {
-  return await db.insert(usersTable).values(data).returning()
+  const [row] = await db.insert(usersTable).values(data).returning({
+    id: usersTable.id,
+    username: usersTable.username,
+    email: usersTable.email,
+  })
+  if (!row) {
+    throw new Error('Failed to add item or retrieve item')
+  }
+  return row
 }
 
 export const createProduct = async (data: insertProduct) => {
