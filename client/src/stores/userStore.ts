@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { client } from '../lib/hono'
 import { useCallback } from 'react'
-import { AuthError } from '../util/util'
 
 interface User {
   id: string
@@ -10,7 +9,7 @@ interface User {
 }
 
 type State = {
-  user: User | null
+  user: User | null | undefined
 }
 
 type Action = {
@@ -20,17 +19,17 @@ type Action = {
 }
 
 export const useUserStore = create<State & Action>((set) => ({
-  user: null,
+  user: undefined,
   setUser: (user) => set(() => ({ user })),
   clearUser: () => set(() => ({ user: null })),
   fetchUser: async () => {
-    let newState: State['user'] = null
     const res = await client.me.$get()
-    if (!res.ok) throw new AuthError(res.statusText)
+    if (!res.ok) {
+      return set(() => ({ user: null }))
+    }
     const data = await res.json()
-    newState = data
 
-    return set(() => ({ user: newState }))
+    return set(() => ({ user: data }))
   },
 }))
 

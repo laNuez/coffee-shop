@@ -1,11 +1,6 @@
-import { Product as ProductType } from 'shared'
 import { formatCents } from '../util/util'
 
 import { X } from 'lucide-react';
-
-interface CartPageProps {
-  products: ProductType[] | undefined
-}
 
 interface ShoppingCart {
   userId: string
@@ -14,7 +9,19 @@ interface ShoppingCart {
   price: number
 }
 
-const CartPage = (props: CartPageProps) => {
+const CartPage = () => {
+  const props = {
+    products: [
+    {
+      name: 'Ethiopian Yirgacheffe',
+      id: 'id',
+      price: 15999,
+      category: 'Beans',
+      description:
+        'Floral and citrusy single-origin beans from Ethiopia, ideal for pour-over methods.',
+    },
+  ]
+ }
   if (!props.products) return <div>empty</div>
   // mock shopping cart
   const shoppingCart: ShoppingCart[] = props.products?.map((p) => {

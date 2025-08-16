@@ -1,22 +1,30 @@
-import { Product as ProductType } from "shared"
-import { Hero } from "../components/Hero"
-import { ProductsGrid } from "../components/ProductsGrid"
-import { Product } from "../components/Product"
+import { Hero } from '../components/Hero'
+import { ProductsGrid } from '../components/ProductsGrid'
+import { Product } from '../components/Product'
+import { useQuery } from '@tanstack/react-query'
+import { getProducts } from '../lib/api'
 
-interface HomePageProps {
-  products: ProductType[] | undefined
-}
+const HomePage = () => {
 
-const HomePage = ({products}: HomePageProps) => {
+  const { data: products, isPending } = useQuery({
+    queryKey: ['products'],
+    queryFn: getProducts,
+  })
+  
   return (
     <div>
       <Hero />
-      <h2 id='coffee'>Featured</h2>
-      <ProductsGrid>
-        {products && products.filter((p)=> p.category === 'Beans').map(p => (
-          <Product product={p} />
-        ))}
-      </ProductsGrid>
+      <h2 id="coffee" className='text-2xl font-bold'>Featured</h2>
+      {isPending ? (
+        <div>loading</div>
+      ) : (
+        <ProductsGrid>
+          {products &&
+            products
+              .filter((p) => p.category === 'Beans')
+              .map((p) => <Product product={p} />)}
+        </ProductsGrid>
+      )}
     </div>
   )
 }
