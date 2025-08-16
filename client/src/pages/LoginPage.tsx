@@ -1,6 +1,6 @@
 import { FormEvent } from 'react'
 import { useInput } from '../hooks/useInput'
-import { Link, useNavigate } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 import { useUserStore } from '../stores/userStore'
 import { client } from '../lib/hono'
 
@@ -10,6 +10,7 @@ const LoginPage = () => {
 
   const fetchUser = useUserStore(state => state.fetchUser)
   const navigate = useNavigate()
+  const { state } = useLocation()
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
@@ -22,9 +23,11 @@ const LoginPage = () => {
       },
     })
     if (!res.ok) return console.log(res)
-    navigate('/')
-    fetchUser()
+    fetchUser().then(() => {
+      navigate(state?.path || '/')
+    })
   }
+
   return (
     <div className="flex justify-center">
       <div>

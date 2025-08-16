@@ -46,6 +46,11 @@ export const Header = () => {
             </NavLink>
           </>
         )}
+        {user && (
+          <NavLink className="btn btn-ghost" to="cart">
+            Cart
+          </NavLink>
+        )}
       </div>
       {user && (
         <div className="dropdown dropdown-end">
