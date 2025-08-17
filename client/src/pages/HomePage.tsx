@@ -22,7 +22,7 @@ const HomePage = () => {
           {products &&
             products
               .filter((p) => p.category === 'Beans')
-              .map((p) => <Product product={p} />)}
+              .map((p) => <Product product={p} key={p.id} />)}
         </ProductsGrid>
       )}
     </div>

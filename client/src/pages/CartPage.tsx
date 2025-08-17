@@ -1,48 +1,36 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { formatCents } from '../util/util'
 
-import { X } from 'lucide-react';
-
-interface ShoppingCart {
-  userId: string
-  productId: string
-  quantity: number
-  price: number
-}
+import { X } from 'lucide-react'
+import { delCartItem, getCart } from '../lib/api'
 
 const CartPage = () => {
-  const props = {
-    products: [
-    {
-      name: 'Ethiopian Yirgacheffe',
-      id: 'id',
-      price: 15999,
-      category: 'Beans',
-      description:
-        'Floral and citrusy single-origin beans from Ethiopia, ideal for pour-over methods.',
-    },
-  ]
- }
-  if (!props.products) return <div>empty</div>
-  // mock shopping cart
-  const shoppingCart: ShoppingCart[] = props.products?.map((p) => {
-    return {
-      userId: "1",
-      productId: p.id,
-      price: p.price,
-      quantity: Math.ceil(Math.random() * 4),
-    }
+  const { data, isPending, error } = useQuery({
+    queryKey: ['cart'],
+    queryFn: getCart,
   })
 
-  // should i fetch the products? or i use what i have?
-  const productsInCart = props.products?.filter((p) =>
-    shoppingCart.find((item) => p.id === item.productId)
-  )
-  const getProduct = (id: string) =>
-    shoppingCart.find((item) => item.productId === id)!
+  const queryClient = useQueryClient()
+  const itemDelMutation = useMutation({
+    mutationFn: (id: string) => delCartItem({ id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cart'] })
+    },
+  })
+
+  const handleDel = (id: string) => {
+    itemDelMutation.mutate(id)
+  }
+
+  if (isPending) return <div>fetching</div>
+  if (error) return <div>error</div>
+
+  const cartItems = data.cart.map((i) => i)
+
   return (
     <div className="flex w-screen mt-2 justify-center bg-base-200">
-      <div className='p-4'>
-        <h2 className='text-xl font-bold'>Shopping cart</h2>
+      <div className="p-4">
+        <h2 className="text-xl font-bold">Shopping cart</h2>
         <table className="table w-max overflow-scroll">
           <thead>
             <tr>
@@ -53,19 +41,21 @@ const CartPage = () => {
             </tr>
           </thead>
           <tbody>
-            {productsInCart.map((p) => (
-              <tr>
-                <td>{p.name}</td>
-                <td>{getProduct(p.id)?.quantity}</td>
+            {cartItems.map((item) => (
+              <tr key={item.id}>
+                <td>{item.product.name}</td>
+                <td>{item.quantity}</td>
+                <td>{formatCents(item.product.price * item.quantity)}</td>
+                <td>{item.product.name}</td>
+                <td>{item.product.name}</td>
                 <td>
-                  {formatCents(
-                    getProduct(p.id).price * getProduct(p.id).quantity
-                  )}
-                </td>
-                <td>{p.name}</td>
-                <td>{p.name}</td>
-                <td>
-                  <button className='btn btn-square bg-base-100 hover:bg-base-200'><X /></button>
+                  <button
+                    onClick={() => handleDel(item.id)}
+                    className="btn btn-square bg-base-100 hover:bg-base-200"
+                    disabled={itemDelMutation.isPending}
+                  >
+                    <X />
+                  </button>
                 </td>
               </tr>
             ))}
@@ -79,11 +69,11 @@ const CartPage = () => {
           </div>
           <div className="flex justify-between w-max flex-col">
             <div>
-              <span className='mr-10'>Subtotal</span>
+              <span className="mr-10">Subtotal</span>
               <span>$$</span>
             </div>
             <div>
-              <span className='mr-10'>Shipping</span>
+              <span className="mr-10">Shipping</span>
               <span>Free</span>
             </div>
           </div>

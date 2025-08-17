@@ -41,6 +41,7 @@ function App() {
 const RequireAuth = (props: PropsWithChildren) => {
   const user = useUserStore((state) => state.user)
   const location = useLocation()
+  if (user === undefined) return <div>fetching user</div> 
   return user ? (
     props.children
   ) : (

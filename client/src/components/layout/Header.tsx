@@ -72,7 +72,7 @@ export const Header = () => {
                 <summary>theme</summary>
                 <ul>
                   {THEMES.map((theme) => (
-                    <li>
+                    <li key={theme}>
                       <button
                         className="btn btn-ghost"
                         onClick={() => setTheme(theme)}
