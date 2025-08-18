@@ -7,14 +7,14 @@ import {
   type insertCartItem,
   type insertProduct,
   type insertUser,
-  type updateCartItem as updateCartItemType,
+  type updateCartItem as updateCartItemType
 } from './schema'
 
 export const createUser = async (data: insertUser) => {
   const [row] = await db.insert(usersTable).values(data).returning({
     id: usersTable.id,
     username: usersTable.username,
-    email: usersTable.email,
+    email: usersTable.email
   })
   if (!row) {
     throw new Error('Failed to add item or retrieve item')

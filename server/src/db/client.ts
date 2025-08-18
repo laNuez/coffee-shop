@@ -5,8 +5,8 @@ import { ENV } from '@server/env'
 export const db = drizzle({
   connection: {
     url: ENV.TURSO_DATABASE_URL,
-    authToken: ENV.TURSO_AUTH_TOKEN,
+    authToken: ENV.TURSO_AUTH_TOKEN
   },
   casing: 'snake_case',
-  schema,
+  schema
 })

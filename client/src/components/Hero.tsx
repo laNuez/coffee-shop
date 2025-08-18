@@ -8,7 +8,9 @@ export const Hero = () => {
             Discover exceptional single-origin coffees and artisanal brewing
             tools, curated for the mindful coffee lover.
           </p>
-          <a href="#coffee" className="btn btn-primary">Shop coffee</a> 
+          <a href="#coffee" className="btn btn-primary">
+            Shop coffee
+          </a>
         </div>
         <div></div>
       </div>

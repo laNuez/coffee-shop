@@ -14,7 +14,7 @@ export const app = new Hono<Variables>()
   .use(
     cors({
       origin: 'http://localhost:5173',
-      credentials: true,
+      credentials: true
     })
   )
 
@@ -27,7 +27,7 @@ export const app = new Hono<Variables>()
   .get('/hello', async (c) => {
     const data: ApiResponse = {
       message: 'Hello BHVR!',
-      success: true,
+      success: true
     }
 
     return c.json(data, { status: 200 })

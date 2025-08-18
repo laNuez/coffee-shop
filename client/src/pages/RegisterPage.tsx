@@ -30,8 +30,8 @@ const RegisterPage = () => {
       json: {
         username: username.value,
         email: email.value,
-        password: password.value,
-      },
+        password: password.value
+      }
     })
     console.log(res)
     if (!res.ok) return console.log(res)
@@ -78,7 +78,9 @@ const RegisterPage = () => {
                   minLength={6}
                   maxLength={100}
                 />
-                <div className="validator-hint">Must be between 6 and 100 characters</div>
+                <div className="validator-hint">
+                  Must be between 6 and 100 characters
+                </div>
               </label>
               <label className="flex flex-col gap-1">
                 <span>Confirm Password</span>

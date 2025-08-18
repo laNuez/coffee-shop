@@ -10,7 +10,7 @@ import z from 'zod'
 
 export const loginSchema = z.object({
   username: z.string(),
-  password: z.string(),
+  password: z.string()
 })
 
 const register = async (user: insertUser) => {
@@ -23,7 +23,7 @@ const register = async (user: insertUser) => {
   } catch (error) {
     if (isUniqueConstraintError(error)) {
       throw new HTTPException(409, {
-        message: 'Username or email already exists',
+        message: 'Username or email already exists'
       })
     }
     throw error
@@ -33,10 +33,12 @@ const register = async (user: insertUser) => {
 type LoginInput = z.infer<typeof loginSchema>
 const login = async (credentials: LoginInput) => {
   const [row] = await getUserByUsername(credentials.username)
-  if (!row) throw new HTTPException(401, { message: 'Invalid username or password' })
+  if (!row)
+    throw new HTTPException(401, { message: 'Invalid username or password' })
 
   const correct = await bcrypt.compare(credentials.password, row.password)
-  if (!correct) throw new HTTPException(401, { message: 'Invalid username or password' })
+  if (!correct)
+    throw new HTTPException(401, { message: 'Invalid username or password' })
 
   const { password, ...user } = row
 
@@ -48,7 +50,7 @@ const login = async (credentials: LoginInput) => {
 
 const userService = {
   register,
-  login,
+  login
 }
 
 export default userService

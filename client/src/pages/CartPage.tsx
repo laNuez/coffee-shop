@@ -7,7 +7,7 @@ import { delCartItem, getCart } from '../lib/api'
 const CartPage = () => {
   const { data, isPending, error } = useQuery({
     queryKey: ['cart'],
-    queryFn: getCart,
+    queryFn: getCart
   })
 
   const queryClient = useQueryClient()
@@ -15,7 +15,7 @@ const CartPage = () => {
     mutationFn: (id: string) => delCartItem({ id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] })
-    },
+    }
   })
 
   const handleDel = (id: string) => {

@@ -17,10 +17,12 @@ export const Product = (props: ProductProps) => {
         />
       </figure>
       <div className="card-body">
-        <h2 className='card-title'>{name}</h2>
+        <h2 className="card-title">{name}</h2>
         <p>{description}</p>
         <div className="card-actions">
-          <button className='btn btn-primary'>Buy now: {formatCents(price)}</button>
+          <button className="btn btn-primary">
+            Buy now: {formatCents(price)}
+          </button>
         </div>
       </div>
     </div>

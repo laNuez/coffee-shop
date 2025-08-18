@@ -19,6 +19,7 @@
     "build:client": "turbo build --filter=client",
     "build:server": "turbo build --filter=server",
     "lint": "turbo lint",
+    "format": "prettier --write .",
     "type-check": "turbo type-check",
     "test": "turbo test",
     "postinstall": "turbo build --filter=shared --filter=server"
@@ -33,6 +34,7 @@
   ],
   "devDependencies": {
     "bun-types": "latest",
+    "prettier": "^3.6.2",
     "turbo": "^2.5.5"
   },
   "peerDependencies": {

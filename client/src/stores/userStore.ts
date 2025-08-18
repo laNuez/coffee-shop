@@ -30,7 +30,7 @@ export const useUserStore = create<State & Action>((set) => ({
     const data = await res.json()
 
     return set(() => ({ user: data }))
-  },
+  }
 }))
 
 export const useFetchUser = () => {

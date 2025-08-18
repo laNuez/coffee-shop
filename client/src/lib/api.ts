@@ -18,8 +18,8 @@ export type DelCartItem = InferRequestType<typeof $delCartItem>['param']
 export const delCartItem = async (args: DelCartItem) => {
   const res = await $delCartItem({
     param: {
-      id: args.id,
-    },
+      id: args.id
+    }
   })
   if (!res.ok) throw await res.json()
 }

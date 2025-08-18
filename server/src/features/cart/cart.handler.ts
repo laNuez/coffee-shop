@@ -27,7 +27,7 @@ const app = new Hono<Variables>()
 
     const { success, data, error } = cartItemInsertSchema.safeParse({
       ...body,
-      userId: user.id,
+      userId: user.id
     })
 
     if (!success) {

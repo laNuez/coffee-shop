@@ -1,72 +1,82 @@
 export const mockProducts = [
   {
     id: 1,
-    name: "Ethiopian Yirgacheffe",
+    name: 'Ethiopian Yirgacheffe',
     price: 1599,
-    category: "Beans",
-    description: "Floral and citrusy single-origin beans from Ethiopia, ideal for pour-over methods.",
+    category: 'Beans',
+    description:
+      'Floral and citrusy single-origin beans from Ethiopia, ideal for pour-over methods.'
   },
   {
     id: 2,
-    name: "Colombian Supremo",
+    name: 'Colombian Supremo',
     price: 1399,
-    category: "Beans",
-    description: "Smooth, well-balanced medium roast with notes of chocolate and nuts.",
+    category: 'Beans',
+    description:
+      'Smooth, well-balanced medium roast with notes of chocolate and nuts.'
   },
   {
     id: 3,
-    name: "Espresso Blend",
+    name: 'Espresso Blend',
     price: 1499,
-    category: "Beans",
-    description: "Dark roasted beans with deep caramel and chocolate notes. Perfect for espresso machines.",
+    category: 'Beans',
+    description:
+      'Dark roasted beans with deep caramel and chocolate notes. Perfect for espresso machines.'
   },
   {
     id: 4,
-    name: "Instant Coffee - House Blend",
+    name: 'Instant Coffee - House Blend',
     price: 899,
-    category: "Instant",
-    description: "Fast and flavorful. Our house blend in instant form for convenience without compromise.",
+    category: 'Instant',
+    description:
+      'Fast and flavorful. Our house blend in instant form for convenience without compromise.'
   },
   {
     id: 5,
-    name: "French Press Set",
+    name: 'French Press Set',
     price: 2499,
-    category: "Gear",
-    description: "Complete French press set including 350ml brewer and stainless steel scoop.",
+    category: 'Gear',
+    description:
+      'Complete French press set including 350ml brewer and stainless steel scoop.'
   },
   {
     id: 6,
-    name: "Kenya AA",
+    name: 'Kenya AA',
     price: 1699,
-    category: "Beans",
-    description: "Bright and winey, this high-grade Kenyan coffee has a bold, fruity flavor profile.",
+    category: 'Beans',
+    description:
+      'Bright and winey, this high-grade Kenyan coffee has a bold, fruity flavor profile.'
   },
   {
     id: 7,
-    name: "Reusable Coffee Filter",
+    name: 'Reusable Coffee Filter',
     price: 699,
-    category: "Gear",
-    description: "Eco-friendly stainless steel coffee filter compatible with most drip brewers.",
+    category: 'Gear',
+    description:
+      'Eco-friendly stainless steel coffee filter compatible with most drip brewers.'
   },
   {
     id: 8,
-    name: "Café Mocha Kit",
+    name: 'Café Mocha Kit',
     price: 1999,
-    category: "Kits",
-    description: "DIY mocha kit with premium cocoa, espresso beans, and milk frothing guide.",
+    category: 'Kits',
+    description:
+      'DIY mocha kit with premium cocoa, espresso beans, and milk frothing guide.'
   },
   {
     id: 9,
-    name: "Guatemalan Antigua",
+    name: 'Guatemalan Antigua',
     price: 1499,
-    category: "Beans",
-    description: "Rich and velvety beans with notes of chocolate and spice from the Antigua region.",
+    category: 'Beans',
+    description:
+      'Rich and velvety beans with notes of chocolate and spice from the Antigua region.'
   },
   {
     id: 10,
-    name: "Coffee Grinder - Manual",
+    name: 'Coffee Grinder - Manual',
     price: 1899,
-    category: "Gear",
-    description: "Adjustable burr grinder with ceramic blades for precise and consistent grinding.",
+    category: 'Gear',
+    description:
+      'Adjustable burr grinder with ceramic blades for precise and consistent grinding.'
   }
-];
+]

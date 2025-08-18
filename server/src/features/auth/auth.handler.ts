@@ -30,7 +30,7 @@ const app = new Hono<Variables>()
       sameSite: 'lax',
       secure: true,
       maxAge: 1000 * 60 * 60,
-      domain: 'localhost',
+      domain: 'localhost'
     })
 
     return c.body(null, 200)
@@ -42,7 +42,7 @@ const app = new Hono<Variables>()
       sameSite: 'lax',
       secure: true,
       maxAge: 1000 * 60 * 60,
-      domain: 'localhost',
+      domain: 'localhost'
     })
     return c.body(null, 200)
   })

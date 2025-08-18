@@ -8,19 +8,19 @@ const LoginPage = () => {
   const username = useInput('')
   const password = useInput('', 'password')
 
-  const fetchUser = useUserStore(state => state.fetchUser)
+  const fetchUser = useUserStore((state) => state.fetchUser)
   const navigate = useNavigate()
   const { state } = useLocation()
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
     if (!username || !password) return
-    
+
     const res = await client.login.$post({
       json: {
         username: username.value,
-        password: password.value,
-      },
+        password: password.value
+      }
     })
     if (!res.ok) return console.log(res)
     fetchUser().then(() => {
@@ -37,16 +37,14 @@ const LoginPage = () => {
               <div className="card-title">
                 <h2 className="text-2xl">Log in</h2>
               </div>
-              <label className='flex flex-col gap-1'>
+              <label className="flex flex-col gap-1">
                 <span>Username</span>
                 <input
                   {...username}
                   className="input input-lg bg-base-200 user-invalid:validator"
                   required
                 />
-                <div className="validator-hint mt-0">
-                  Required
-                </div>
+                <div className="validator-hint mt-0">Required</div>
               </label>
               <label className="flex flex-col gap-1">
                 <span>Password</span>
