@@ -5,7 +5,10 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "bun --watch run src/index.ts && tsc --watch"
+    "dev": "bun --watch run src/index.ts && tsc --watch",
+    "test": "bun test src",
+    "test-drizzle-generate": "bun --env-file=.env.test drizzle-kit generate --config=drizzle-test.config.ts",
+    "test-drizzle-migrate": "bun --env-file=.env.test drizzle-kit migrate --config=drizzle-test.config.ts"
   },
   "dependencies": {
     "@libsql/client": "^0.15.10",

@@ -15,7 +15,7 @@ const app = new Hono()
     const [product] = await createProduct(data)
     if (!product) return c.json({ error: 'something went wrong' }, 500)
 
-    return c.json(product)
+    return c.json(product, 201)
   })
 
   .get('/', async (c) => {

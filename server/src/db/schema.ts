@@ -35,7 +35,9 @@ export const cartItemsTable = sqliteTable(
       .references(() => usersTable.id)
       .notNull(),
     productId: text()
-      .references(() => productsTable.id)
+      .references(() => productsTable.id, {
+        onDelete: 'cascade'
+      })
       .notNull(),
     quantity: int().notNull().default(1)
   },

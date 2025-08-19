@@ -1,6 +1,5 @@
 export const mockProducts = [
   {
-    id: 1,
     name: 'Ethiopian Yirgacheffe',
     price: 1599,
     category: 'Beans',
@@ -8,7 +7,6 @@ export const mockProducts = [
       'Floral and citrusy single-origin beans from Ethiopia, ideal for pour-over methods.'
   },
   {
-    id: 2,
     name: 'Colombian Supremo',
     price: 1399,
     category: 'Beans',
@@ -16,7 +14,6 @@ export const mockProducts = [
       'Smooth, well-balanced medium roast with notes of chocolate and nuts.'
   },
   {
-    id: 3,
     name: 'Espresso Blend',
     price: 1499,
     category: 'Beans',
@@ -24,7 +21,6 @@ export const mockProducts = [
       'Dark roasted beans with deep caramel and chocolate notes. Perfect for espresso machines.'
   },
   {
-    id: 4,
     name: 'Instant Coffee - House Blend',
     price: 899,
     category: 'Instant',
@@ -32,7 +28,6 @@ export const mockProducts = [
       'Fast and flavorful. Our house blend in instant form for convenience without compromise.'
   },
   {
-    id: 5,
     name: 'French Press Set',
     price: 2499,
     category: 'Gear',
@@ -40,7 +35,6 @@ export const mockProducts = [
       'Complete French press set including 350ml brewer and stainless steel scoop.'
   },
   {
-    id: 6,
     name: 'Kenya AA',
     price: 1699,
     category: 'Beans',
@@ -48,7 +42,6 @@ export const mockProducts = [
       'Bright and winey, this high-grade Kenyan coffee has a bold, fruity flavor profile.'
   },
   {
-    id: 7,
     name: 'Reusable Coffee Filter',
     price: 699,
     category: 'Gear',
@@ -56,7 +49,6 @@ export const mockProducts = [
       'Eco-friendly stainless steel coffee filter compatible with most drip brewers.'
   },
   {
-    id: 8,
     name: 'Café Mocha Kit',
     price: 1999,
     category: 'Kits',
@@ -64,7 +56,6 @@ export const mockProducts = [
       'DIY mocha kit with premium cocoa, espresso beans, and milk frothing guide.'
   },
   {
-    id: 9,
     name: 'Guatemalan Antigua',
     price: 1499,
     category: 'Beans',
@@ -72,7 +63,6 @@ export const mockProducts = [
       'Rich and velvety beans with notes of chocolate and spice from the Antigua region.'
   },
   {
-    id: 10,
     name: 'Coffee Grinder - Manual',
     price: 1899,
     category: 'Gear',
