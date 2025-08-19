@@ -35,3 +35,8 @@
   --depth: 0;
   --noise: 0;
 }
+
+@theme {
+  --font-sans: Inter, sans-serif;
+  --font-sans--font-feature-settings: 'cv11';
+}
