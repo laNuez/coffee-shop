@@ -42,8 +42,8 @@ const RegisterPage = () => {
     <div className="flex justify-center">
       <div>
         <form onSubmit={submit}>
-          <div className="flex flex-col gap 3 card shadow-md p-2 w-96 justify-between">
-            <div className="card-body ">
+          <div className="gap 3 card flex w-96 flex-col justify-between p-2 shadow-md">
+            <div className="card-body">
               <div className="card-title">
                 <h2 className="text-2xl">Sign up to Coffee-shop</h2>
               </div>

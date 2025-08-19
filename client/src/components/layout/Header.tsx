@@ -59,7 +59,7 @@ export const Header = () => {
           </div>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content z-1 bg-base-100 w-52 p-2"
+            className="menu menu-sm dropdown-content bg-base-100 z-1 w-52 p-2"
           >
             <li>
               <NavLink to="user/settings">settings</NavLink>
