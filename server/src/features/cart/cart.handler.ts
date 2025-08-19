@@ -14,7 +14,7 @@ const app = new Hono<Variables>()
     const cart = await getCartByUserId(user.id)
     if (!cart) return c.json({ error: 'not found' }, 404)
 
-    return c.json({ cart })
+    return c.json(cart)
   })
 
   .post('/', requireAuth, async (c) => {
