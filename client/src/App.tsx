@@ -6,6 +6,7 @@ import DefaultLayout from './components/layout/DefaultLayout'
 import CartPage from './pages/CartPage'
 import LoginPage from './pages/LoginPage'
 import { useFetchUser, useUserStore } from './stores/userStore'
+import ProductPage from './pages/ProductPage'
 
 function App() {
   const fetchUser = useFetchUser()
@@ -32,6 +33,7 @@ function App() {
             }
           />
           <Route path="login" element={<LoginPage />} />
+          <Route path="product/:id" element={<ProductPage />} />
         </Routes>
       </DefaultLayout>
     </div>

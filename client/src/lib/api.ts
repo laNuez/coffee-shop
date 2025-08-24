@@ -7,6 +7,16 @@ export const getProducts = async () => {
   return await res.json()
 }
 
+export const getProduct = async (id: string) => {
+  const res = await client.products[':id'].$get({
+    param: {
+      id
+    }
+  })
+  if (!res.ok) throw await res.json()
+  return await res.json()
+}
+
 export const getCart = async () => {
   const res = await client.cart.$get()
   if (!res.ok) throw await res.json()

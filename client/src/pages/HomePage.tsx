@@ -3,6 +3,7 @@ import { ProductsGrid } from '../components/ProductsGrid'
 import { Product } from '../components/Product'
 import { useQuery } from '@tanstack/react-query'
 import { getProducts } from '../lib/api'
+import { Link } from 'react-router'
 
 const HomePage = () => {
   const { data: products, isPending } = useQuery({
@@ -23,7 +24,11 @@ const HomePage = () => {
           {products &&
             products
               .filter((p) => p.category === 'Beans')
-              .map((p) => <Product product={p} key={p.id} />)}
+              .map((p) => (
+                <Link to={`product/${p.id}`}>
+                  <Product product={p} key={p.id} />
+                </Link>
+              ))}
         </ProductsGrid>
       )}
     </div>

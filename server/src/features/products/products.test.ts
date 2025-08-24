@@ -100,7 +100,7 @@ describe('Products API', () => {
           id: ValidProductId
         }
       })
-      
+
       expect(res.status).toBe(404)
     })
   })
