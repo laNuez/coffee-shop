@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'react-router'
-import { getProduct } from '../lib/api'
+import { addToCart, AddToCartInput, getProduct } from '../lib/api'
 import { formatCents } from '../util/util'
 import { useState } from 'react'
-import { Plus, Minus } from 'lucide-react'
+import { Plus, Minus, Check } from 'lucide-react'
 type ProductParams = {
   id: string
 }
@@ -21,6 +21,26 @@ const ProductPage = () => {
       return getProduct(id)
     }
   })
+
+  const queryClient = useQueryClient()
+  const addToCartMutation = useMutation({
+    mutationKey: ['cart'],
+    mutationFn: (args: AddToCartInput) => addToCart(args),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cart'] })
+    }
+  })
+
+  // TODO: what about when a product is already on the cart?
+  // ill get a 409 conflict, i should change the backend
+  // im having trouble with the rpc, the endpoints that need a body dont get the types correctly.
+  // i can fix that using a validator, but why i didnt do that sooner? don't remember if i had a reason
+  const handleAddToCart = () => {
+    addToCartMutation.mutate({
+      productId: id,
+      quantity: quantity
+    })
+  }
 
   if (isPending) return <div>loading</div>
   if (error) return <div>error</div>
@@ -59,7 +79,14 @@ const ProductPage = () => {
               >
                 <Plus />
               </button>
-              <button className="btn btn-primary">Add to cart</button>
+              <button
+                className="btn btn-primary"
+                onClick={handleAddToCart}
+                disabled={addToCartMutation.isPending}
+              >
+                Add to cart
+                {addToCartMutation.isSuccess && <Check />}
+              </button>
             </div>
             <div className="flex w-20 items-center gap-2">
               <button className="btn btn-neutral btn-outline w-full">

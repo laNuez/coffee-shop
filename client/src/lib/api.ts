@@ -33,3 +33,16 @@ export const delCartItem = async (args: DelCartItem) => {
   })
   if (!res.ok) throw await res.json()
 }
+
+const $addToCart = client.cart.$post
+export type AddToCartInput = {
+  productId: string
+  quantity: number
+}
+export const addToCart = async (args: AddToCartInput) => {
+  const res = await $addToCart({
+    json: args
+  })
+  if (!res.ok) throw await res.json()
+  return await res.json()
+}
