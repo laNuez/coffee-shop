@@ -34,6 +34,9 @@ export const Header = () => {
         <NavLink className="btn btn-ghost" to="/">
           Home
         </NavLink>
+        <NavLink className="btn btn-ghost" to="/products">
+          Products
+        </NavLink>
       </div>
       <div>
         {!user && (

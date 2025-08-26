@@ -9,7 +9,7 @@ export const Product = (props: ProductProps) => {
   const { description, name, price } = props.product
 
   return (
-    <div className="card bg-base-200 w-96 hover:shadow-sm">
+    <div className="card bg-base-200 w-full hover:shadow-sm">
       <figure>
         <img
           src="https://placehold.co/600x400"

@@ -25,8 +25,10 @@ const HomePage = () => {
             products
               .filter((p) => p.category === 'Beans')
               .map((p) => (
-                <Link to={`product/${p.id}`}>
-                  <Product product={p} key={p.id} />
+                <Link to={`product/${p.id}`} key={p.id}>
+                  <div className="w-96">
+                    <Product product={p} />
+                  </div>
                 </Link>
               ))}
         </ProductsGrid>
