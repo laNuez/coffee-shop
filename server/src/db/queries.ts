@@ -34,3 +34,9 @@ export const getCartItemById = async (userId: string, id: string) => {
     where: and(eq(cartItemsTable.userId, userId), eq(cartItemsTable.id, id))
   })
 }
+
+export const getCategories = async () => {
+  return await db
+    .selectDistinct({ category: productsTable.category })
+    .from(productsTable)
+}

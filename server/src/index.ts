@@ -6,6 +6,7 @@ import { userContext } from './middleware/userContext'
 import auth from '@server/features/auth/auth.handler'
 import products from '@server/features/products/products.handler'
 import cart from '@server/features/cart/cart.handler'
+import categories from '@server/features/categories/categories.handler'
 import type { Variables } from './types'
 import { HTTPException } from 'hono/http-exception'
 
@@ -34,6 +35,7 @@ export const app = new Hono<Variables>()
   })
 
   .route('/', auth)
+  .route('/categories', categories)
   .route('/products', products)
   .route('/cart', cart)
   .onError((error, c) => {
