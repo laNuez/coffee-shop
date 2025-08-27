@@ -19,7 +19,8 @@ const app = new Hono()
   })
 
   .get('/', async (c) => {
-    const products = await getProducts()
+    const { category } = c.req.query()
+    const products = await getProducts(category)
     return c.json(products)
   })
 

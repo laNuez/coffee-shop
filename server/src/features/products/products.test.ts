@@ -26,6 +26,33 @@ describe('Products API', () => {
       expect(res.status).toBe(200)
       expect(data.length).toBe(mockProducts.length)
     })
+
+    it('should return products matching the Beans category', async () => {
+      const category = 'Beans'
+      const res = await client.products.$get({
+        query: {
+          category
+        }
+      })
+      const data = await res.json()
+      const filtered = mockProducts.filter((p) => p.category === category)
+
+      expect(res.status).toBe(200)
+      expect(data.length).toBe(filtered.length)
+      data.forEach((p) => expect(p.category).toBe(category))
+    })
+
+    it('should return an empty array if the category doesnt match', async () => {
+      const res = await client.products.$get({
+        query: {
+          category: 'beep'
+        }
+      })
+      const data = await res.json()
+
+      expect(res.status).toBe(200)
+      expect(data.length).toBe(0)
+    })
   })
 
   describe('GET /:id', () => {

@@ -17,8 +17,10 @@ export const getCartByUserId = async (id: string) => {
   return cart
 }
 
-export const getProducts = async () => {
-  return await db.query.productsTable.findMany()
+export const getProducts = async (category?: string) => {
+  return await db.query.productsTable.findMany({
+    where: category ? eq(productsTable.category, category) : undefined
+  })
 }
 
 export const getProductById = async (id: string) => {
