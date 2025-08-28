@@ -1,11 +1,20 @@
-import { PropsWithChildren } from 'react'
+import { useEffect } from 'react'
+import { useFetchUser } from '../../stores/userStore'
 import { Header } from './Header'
+import { Outlet } from 'react-router'
 
-const DefaultLayout = (props: PropsWithChildren) => {
+const DefaultLayout = () => {
+  const fetchUser = useFetchUser()
+
+  useEffect(() => {
+    fetchUser().catch((error) => {
+      console.error(error)
+    })
+  }, [fetchUser])
   return (
     <>
       <Header />
-      <div>{props.children}</div>
+      <div>{<Outlet />}</div>
     </>
   )
 }
