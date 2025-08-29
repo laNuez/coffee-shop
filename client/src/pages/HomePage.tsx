@@ -8,7 +8,7 @@ import { Link } from 'react-router'
 const HomePage = () => {
   const { data: products, isPending } = useQuery({
     queryKey: ['products'],
-    queryFn: getProducts
+    queryFn: () => getProducts()
   })
 
   return (

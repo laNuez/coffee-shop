@@ -1,5 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useParams } from 'react-router'
+import {
+  QueryClient,
+  queryOptions,
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery
+} from '@tanstack/react-query'
+import { LoaderFunctionArgs, useParams } from 'react-router'
 import { addToCart, AddToCartInput, getProduct } from '../lib/api'
 import { formatCents } from '../util/util'
 import { useState } from 'react'
@@ -8,19 +14,25 @@ type ProductParams = {
   id: string
 }
 
-const ProductPage = () => {
-  const { id } = useParams() as ProductParams
-  const [quantity, setQuantity] = useState(1)
-  const {
-    data: product,
-    isPending,
-    error
-  } = useQuery({
+const productQuery = (id: string) =>
+  queryOptions({
     queryKey: ['products', id],
     queryFn: () => {
       return getProduct(id)
     }
   })
+
+export const loader =
+  (queryClient: QueryClient) =>
+  async ({ params }: LoaderFunctionArgs) => {
+    return await queryClient.ensureQueryData(productQuery(params.id!))
+  }
+
+const ProductPage = () => {
+  const { id } = useParams() as ProductParams
+  const [quantity, setQuantity] = useState(1)
+
+  const { data: product } = useSuspenseQuery(productQuery(id))
 
   const queryClient = useQueryClient()
   const addToCartMutation = useMutation({
@@ -41,9 +53,6 @@ const ProductPage = () => {
       quantity: quantity
     })
   }
-
-  if (isPending) return <div>loading</div>
-  if (error) return <div>error</div>
 
   return (
     <div>

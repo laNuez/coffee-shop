@@ -8,7 +8,7 @@ import CartPage from './pages/CartPage'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import ProductPage, { loader as productLoader } from './pages/ProductPage'
-import ProductsPage from './pages/ProductsPage'
+import ProductsPage, { loader as productsLoader } from './pages/ProductsPage'
 import SignUpPage from './pages/RegisterPage'
 import { RequireAuth } from './components/RequireAuth'
 import { queryClient } from './lib/query'
@@ -32,7 +32,11 @@ export const router = createBrowserRouter(
         element={<ProductPage />}
         loader={productLoader(queryClient)}
       />
-      <Route path="products" element={<ProductsPage />} />
+      <Route
+        path="products"
+        element={<ProductsPage />}
+        loader={productsLoader(queryClient)}
+      />
     </Route>
   )
 )

@@ -1,8 +1,14 @@
-import { InferRequestType } from 'hono'
+import { InferRequestType, InferResponseType } from 'hono'
 import { client } from './hono'
 
-export const getProducts = async () => {
-  const res = await client.products.$get()
+const $getProducts = client.products.$get
+export type ProductsResponse = InferResponseType<typeof $getProducts>
+export const getProducts = async (category?: string) => {
+  const res = await $getProducts({
+    query: {
+      category
+    }
+  })
   if (!res.ok) throw await res.json()
   return await res.json()
 }
@@ -43,6 +49,14 @@ export const addToCart = async (args: AddToCartInput) => {
   const res = await $addToCart({
     json: args
   })
+  if (!res.ok) throw await res.json()
+  return await res.json()
+}
+
+const $getCategories = client.categories.$get
+export type CategoriesResponse = InferResponseType<typeof $getCategories>
+export const getCategories = async () => {
+  const res = await $getCategories()
   if (!res.ok) throw await res.json()
   return await res.json()
 }
