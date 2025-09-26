@@ -5,7 +5,7 @@ import {
 } from 'react-router'
 import DefaultLayout from './components/layout/DefaultLayout'
 import CartPage from './pages/CartPage'
-import HomePage from './pages/HomePage'
+import HomePage, { loader as homepageLoader } from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import ProductPage, { loader as productLoader } from './pages/ProductPage'
 import ProductsPage, { loader as productsLoader } from './pages/ProductsPage'
@@ -16,7 +16,11 @@ import { queryClient } from './lib/query'
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<DefaultLayout />}>
-      <Route index element={<HomePage />} />
+      <Route
+        index
+        element={<HomePage />}
+        loader={homepageLoader(queryClient)}
+      />
       <Route path="register" element={<SignUpPage />} />
       <Route
         path="cart"
