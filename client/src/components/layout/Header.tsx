@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router'
 import { useLogout, useUserStore } from '../../stores/userStore'
+import { Menu } from 'lucide-react'
 
-const THEMES = ['light', 'dark', 'coffee'] as const
+const THEMES = ['light', 'dark'] as const
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isValidTheme = (theme: any): theme is Theme => {
   return THEMES.includes(theme)
@@ -30,15 +31,34 @@ export const Header = () => {
 
   return (
     <div className="navbar bg-base-100 shadow-sm">
-      <div className="flex-1">
-        <NavLink className="btn btn-ghost" to="/">
-          Home
-        </NavLink>
-        <NavLink className="btn btn-ghost" to="/products">
-          Products
-        </NavLink>
+      <div className="navbar-start">
+        <div className="dropdown lg:hidden">
+          <div tabIndex={0} role="button" className="btn btn-ghost">
+            <Menu />
+          </div>
+          <ul
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            tabIndex={0}
+          >
+            <li>
+              <NavLink to="/">Home</NavLink>
+            </li>
+            <li>
+              <NavLink to="/products">Products</NavLink>
+            </li>
+          </ul>
+        </div>
+        <div className="hidden lg:flex">
+          <NavLink className="btn btn-ghost" to="/">
+            Home
+          </NavLink>
+          <NavLink className="btn btn-ghost" to="/products">
+            Products
+          </NavLink>
+        </div>
       </div>
-      <div>
+      <div className="navbar-center"></div>
+      <div className="navbar-end">
         {!user && (
           <>
             <NavLink className="btn btn-ghost" to="login">
@@ -54,42 +74,42 @@ export const Header = () => {
             Cart
           </NavLink>
         )}
-      </div>
-      {user && (
-        <div className="dropdown dropdown-end">
-          <div tabIndex={0} role="button" className="btn btn-ghost">
-            Mi cuenta
+        {user && (
+          <div className="dropdown dropdown-end">
+            <div tabIndex={0} role="button" className="btn btn-ghost">
+              <span className="text-nowrap">Mi cuenta</span>
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content bg-base-100 z-1 w-52 p-2"
+            >
+              <li>
+                <NavLink to="user/settings">settings</NavLink>
+              </li>
+              <li>
+                <button onClick={handleLogout}>logout</button>
+              </li>
+            </ul>
           </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 z-1 w-52 p-2"
-          >
-            <li>
-              <NavLink to="user/settings">settings</NavLink>
-            </li>
-            <li>
-              <button onClick={handleLogout}>logout</button>
-            </li>
-            <li>
-              <details open>
-                <summary>theme</summary>
-                <ul>
-                  {THEMES.map((theme) => (
-                    <li key={theme}>
-                      <button
-                        className="btn btn-ghost"
-                        onClick={() => setTheme(theme)}
-                      >
-                        {theme}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            </li>
+        )}
+        <div className="dropdown">
+          <div className="btn btn-ghost" tabIndex={0}>
+            Theme
+          </div>
+          <ul className="menu menu-sm bg-base-100 p2 dropdown-content z-1">
+            {THEMES.map((theme) => (
+              <li key={theme}>
+                <button
+                  className="btn btn-ghost"
+                  onClick={() => setTheme(theme)}
+                >
+                  {theme}
+                </button>
+              </li>
+            ))}
           </ul>
         </div>
-      )}
+      </div>
     </div>
   )
 }
