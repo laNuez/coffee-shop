@@ -1,19 +1,27 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  QueryClient,
+  queryOptions,
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery
+} from '@tanstack/react-query'
 import { formatCents } from '../util/util'
 
 import { delCartItem, getCart } from '../lib/api'
 import { X } from 'lucide-react'
 import { NavLink } from 'react-router'
 
+const cartQuery = queryOptions({
+  queryKey: ['cart'],
+  queryFn: getCart
+})
+
+export const loader = (queryClient: QueryClient) => () => {
+  return queryClient.ensureQueryData(cartQuery)
+}
+
 const CartPage = () => {
-  const {
-    data: cart,
-    isPending,
-    error
-  } = useQuery({
-    queryKey: ['cart'],
-    queryFn: getCart
-  })
+  const { data: cart } = useSuspenseQuery(cartQuery)
 
   const queryClient = useQueryClient()
   const itemDelMutation = useMutation({
@@ -26,9 +34,6 @@ const CartPage = () => {
   const handleDel = (id: string) => {
     itemDelMutation.mutate(id)
   }
-
-  if (isPending) return <div>fetching</div>
-  if (error) return <div>error</div>
 
   return (
     <div className="mx-auto grid min-h-96 max-w-4xl grid-cols-1 p-4 lg:grid-cols-[2fr_1fr]">

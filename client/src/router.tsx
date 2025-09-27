@@ -4,7 +4,7 @@ import {
   Route
 } from 'react-router'
 import DefaultLayout from './components/layout/DefaultLayout'
-import CartPage from './pages/CartPage'
+import CartPage, { loader as cartLoader } from './pages/CartPage'
 import HomePage, { loader as homepageLoader } from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import ProductPage, { loader as productLoader } from './pages/ProductPage'
@@ -29,6 +29,7 @@ export const router = createBrowserRouter(
             <CartPage />
           </RequireAuth>
         }
+        loader={cartLoader(queryClient)}
       />
       <Route path="login" element={<LoginPage />} />
       <Route
