@@ -20,7 +20,7 @@ describe('Products API', () => {
 
   describe('GET /', () => {
     it('should returns all products', async () => {
-      const res = await client.products.$get()
+      const res = await client.api.products.$get()
       const data = await res.json()
 
       expect(res.status).toBe(200)
@@ -29,7 +29,7 @@ describe('Products API', () => {
 
     it('should return products matching the Beans category', async () => {
       const category = 'Beans'
-      const res = await client.products.$get({
+      const res = await client.api.products.$get({
         query: {
           category
         }
@@ -43,7 +43,7 @@ describe('Products API', () => {
     })
 
     it('should return an empty array if the category doesnt match', async () => {
-      const res = await client.products.$get({
+      const res = await client.api.products.$get({
         query: {
           category: 'beep'
         }
@@ -57,7 +57,7 @@ describe('Products API', () => {
 
   describe('GET /:id', () => {
     it('should return a product if the id is valid', async () => {
-      const res = await client.products[':id'].$get({
+      const res = await client.api.products[':id'].$get({
         param: {
           id: ValidProductId
         }
@@ -70,7 +70,7 @@ describe('Products API', () => {
     })
 
     it('should return 404 if the id is invalid', async () => {
-      const res = await client.products[':id'].$get({
+      const res = await client.api.products[':id'].$get({
         param: {
           id: crypto.randomUUID()
         }
@@ -83,7 +83,7 @@ describe('Products API', () => {
   describe('POST /', () => {
     it('should return a 201 and the product if the body is valid', async () => {
       const mock = mockProducts[0]!
-      const res = await client.products.$post({
+      const res = await client.api.products.$post({
         json: mock
       })
       if (!res.ok) throw new Error(`${res.status}`)
@@ -96,7 +96,7 @@ describe('Products API', () => {
 
     it('should return a 400 when the price is missing', async () => {
       const { price, ...mock } = mockProducts[0]!
-      const res = await client.products.$post({
+      const res = await client.api.products.$post({
         json: mock
       })
 
@@ -106,7 +106,7 @@ describe('Products API', () => {
 
   describe('DELETE /:id', () => {
     it('should return a 204 status code', async () => {
-      const res = await client.products[':id'].$delete({
+      const res = await client.api.products[':id'].$delete({
         param: {
           id: ValidProductId
         }
@@ -115,14 +115,14 @@ describe('Products API', () => {
     })
 
     it('should return a 404 status code when trying to delete the same product twice', async () => {
-      const _res = await client.products[':id'].$delete({
+      const _res = await client.api.products[':id'].$delete({
         param: {
           id: ValidProductId
         }
       })
       expect(_res.status).toBe(204)
 
-      const res = await client.products[':id'].$delete({
+      const res = await client.api.products[':id'].$delete({
         param: {
           id: ValidProductId
         }

@@ -26,7 +26,7 @@ const RegisterPage = () => {
   const submit = async (e: FormEvent) => {
     e.preventDefault()
     if (validationError.length > 0) return
-    const res = await client.register.$post({
+    const res = await client.api.register.$post({
       json: {
         username: username.value,
         email: email.value,

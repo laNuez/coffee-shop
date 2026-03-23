@@ -1,7 +1,7 @@
 import { InferRequestType, InferResponseType } from 'hono'
 import { client } from './hono'
 
-const $getProducts = client.products.$get
+const $getProducts = client.api.products.$get
 export type ProductsResponse = InferResponseType<typeof $getProducts>
 export const getProducts = async (category?: string) => {
   const res = await $getProducts({
@@ -14,7 +14,7 @@ export const getProducts = async (category?: string) => {
 }
 
 export const getProduct = async (id: string) => {
-  const res = await client.products[':id'].$get({
+  const res = await client.api.products[':id'].$get({
     param: {
       id
     }
@@ -24,12 +24,12 @@ export const getProduct = async (id: string) => {
 }
 
 export const getCart = async () => {
-  const res = await client.cart.$get()
+  const res = await client.api.cart.$get()
   if (!res.ok) throw await res.json()
   return await res.json()
 }
 
-const $delCartItem = client.cart[':id'].$delete
+const $delCartItem = client.api.cart[':id'].$delete
 export type DelCartItem = InferRequestType<typeof $delCartItem>['param']
 export const delCartItem = async (args: DelCartItem) => {
   const res = await $delCartItem({
@@ -40,7 +40,7 @@ export const delCartItem = async (args: DelCartItem) => {
   if (!res.ok) throw await res.json()
 }
 
-const $addToCart = client.cart.$post
+const $addToCart = client.api.cart.$post
 export type AddToCartInput = {
   productId: string
   quantity: number
@@ -53,7 +53,7 @@ export const addToCart = async (args: AddToCartInput) => {
   return await res.json()
 }
 
-const $getCategories = client.categories.$get
+const $getCategories = client.api.categories.$get
 export type CategoriesResponse = InferResponseType<typeof $getCategories>
 export const getCategories = async () => {
   const res = await $getCategories()

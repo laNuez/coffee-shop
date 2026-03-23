@@ -16,7 +16,7 @@ const LoginPage = () => {
     e.preventDefault()
     if (!username || !password) return
 
-    const res = await client.login.$post({
+    const res = await client.api.login.$post({
       json: {
         username: username.value,
         password: password.value

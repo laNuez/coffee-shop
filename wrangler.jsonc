@@ -1,0 +1,20 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "coffee-shop",
+  "main": "./server/dist/index.js",
+  "compatibility_date": "2025-05-25",
+  "assets": {
+    "directory": "./client/dist",
+    "not_found_handling": "single-page-application"
+  },
+  "compatibility_flags": [
+    "nodejs_compat",
+    "nodejs_compat_populate_process_env"
+  ], // Enable node for Vite path features
+  "routes": [
+    {
+      "pattern": "coffee.nuezky.tk",
+      "custom_domain": true
+    }
+  ]
+}

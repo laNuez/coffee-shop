@@ -23,7 +23,7 @@ export const useUserStore = create<State & Action>((set) => ({
   setUser: (user) => set(() => ({ user })),
   clearUser: () => set(() => ({ user: null })),
   fetchUser: async () => {
-    const res = await client.me.$get()
+    const res = await client.api.me.$get()
     if (!res.ok) {
       return set(() => ({ user: null }))
     }
@@ -46,7 +46,7 @@ export const useLogout = () => {
   const clearUser = useUserStore((state) => state.clearUser)
 
   const fn = async () => {
-    await client.logout.$get()
+    await client.api.logout.$get()
     clearUser()
   }
   return useCallback(fn, [clearUser])

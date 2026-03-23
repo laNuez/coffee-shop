@@ -11,6 +11,7 @@ import type { Variables } from './types'
 import { HTTPException } from 'hono/http-exception'
 
 export const app = new Hono<Variables>()
+  .basePath('/api')
 
   .use(
     cors({

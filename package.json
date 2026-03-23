@@ -22,7 +22,8 @@
     "format": "prettier --write .",
     "type-check": "turbo type-check",
     "test": "turbo test",
-    "postinstall": "turbo build --filter=shared --filter=server"
+    "postinstall": "turbo build --filter=shared --filter=server",
+    "deploy": "turbo build && wrangler deploy --minify"
   },
   "keywords": [
     "bun",
@@ -33,10 +34,12 @@
     "turbo"
   ],
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260317.1",
     "bun-types": "latest",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
-    "turbo": "^2.5.5"
+    "turbo": "^2.5.5",
+    "wrangler": "^4.76.0"
   },
   "peerDependencies": {
     "typescript": "^5.7.3"

@@ -5,6 +5,7 @@ import { deleteCookie, setCookie } from 'hono/cookie'
 import type { Variables } from '@server/types'
 import { requireAuth } from '@server/middleware/userContext'
 import userService, { loginSchema } from './auth.service'
+import { cookie_config } from './auth.config'
 
 const app = new Hono<Variables>()
   .post('/register', async (c) => {
@@ -24,26 +25,12 @@ const app = new Hono<Variables>()
 
     const accessToken = await userService.login(data)
 
-    setCookie(c, 'access_token', accessToken, {
-      path: '/',
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: true,
-      maxAge: 1000 * 60 * 60,
-      domain: 'localhost'
-    })
+    setCookie(c, 'access_token', accessToken, cookie_config)
 
     return c.body(null, 200)
   })
   .get('/logout', requireAuth, (c) => {
-    deleteCookie(c, 'access_token', {
-      path: '/',
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: true,
-      maxAge: 1000 * 60 * 60,
-      domain: 'localhost'
-    })
+    deleteCookie(c, 'access_token', cookie_config)
     return c.body(null, 200)
   })
   .get('/me', requireAuth, (c) => {
