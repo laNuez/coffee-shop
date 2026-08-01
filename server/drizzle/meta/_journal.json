@@ -15,6 +15,20 @@
       "when": 1755582908745,
       "tag": "0001_faulty_madrox",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1785559575495,
+      "tag": "0002_bouncy_colleen_wing",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1785559854643,
+      "tag": "0003_bizarre_war_machine",
+      "breakpoints": true
     }
   ]
 }

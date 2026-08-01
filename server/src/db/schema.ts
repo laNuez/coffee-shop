@@ -22,7 +22,12 @@ export const usersTable = sqliteTable('users_table', {
     .$defaultFn(() => crypto.randomUUID()),
   username: text().notNull().unique(),
   email: text().unique().notNull(),
-  password: text().notNull()
+  password: text().notNull(),
+  role: text({
+    enum: ['admin', 'user']
+  })
+    .default('user')
+    .notNull()
 })
 
 export const cartItemsTable = sqliteTable(
@@ -72,7 +77,8 @@ export const userInsertSchema = createInsertSchema(usersTable, {
   username: (schema) => schema.min(4).max(12),
   password: (schema) => schema.min(6).max(100)
 }).omit({
-  id: true
+  id: true,
+  role: true
 })
 
 export const productInsertSchema = createInsertSchema(productsTable, {

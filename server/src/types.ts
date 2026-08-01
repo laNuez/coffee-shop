@@ -5,6 +5,7 @@ export interface UserFromToken {
   username: string
   email: string
   exp: number
+  role: string
 }
 
 export type UserWithCart = Awaited<ReturnType<typeof getCartByUserId>>
