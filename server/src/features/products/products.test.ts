@@ -1,13 +1,27 @@
 import { db } from '@server/db/client'
-import { productsTable } from '@server/db/schema'
+import { productsTable, usersTable, } from '@server/db/schema'
 import app from '@server/index'
 import { mockProducts } from '@server/mock'
-import { beforeEach, describe, expect, it, mock, test } from 'bun:test'
+import { createTestAdmin } from '@server/tests/helpers'
+import {
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'bun:test'
 import { testClient } from 'hono/testing'
 
 const client = testClient(app)
 
 describe('Products API', () => {
+  let adminToken: string
+
+  beforeAll(async () => {
+    await db.delete(usersTable)
+    adminToken = await createTestAdmin()
+  })
+
   let ValidProductId: string
   beforeEach(async () => {
     await db.delete(productsTable)
@@ -83,9 +97,16 @@ describe('Products API', () => {
   describe('POST /', () => {
     it('should return a 201 and the product if the body is valid', async () => {
       const mock = mockProducts[0]!
-      const res = await client.api.products.$post({
-        json: mock
-      })
+      const res = await client.api.products.$post(
+        {
+          json: mock
+        },
+        {
+          headers: {
+            Cookie: `${adminToken}`
+          }
+        }
+      )
       if (!res.ok) throw new Error(`${res.status}`)
       const data = await res.json()
 
@@ -96,9 +117,16 @@ describe('Products API', () => {
 
     it('should return a 400 when the price is missing', async () => {
       const { price, ...mock } = mockProducts[0]!
-      const res = await client.api.products.$post({
-        json: mock
-      })
+      const res = await client.api.products.$post(
+        {
+          json: mock
+        },
+        {
+          headers: {
+            Cookie: `${adminToken}`
+          }
+        }
+      )
 
       expect(res.status).toBe(400)
     })
@@ -106,27 +134,48 @@ describe('Products API', () => {
 
   describe('DELETE /:id', () => {
     it('should return a 204 status code', async () => {
-      const res = await client.api.products[':id'].$delete({
-        param: {
-          id: ValidProductId
+      const res = await client.api.products[':id'].$delete(
+        {
+          param: {
+            id: ValidProductId
+          }
+        },
+        {
+          headers: {
+            Cookie: `${adminToken}`
+          }
         }
-      })
+      )
       expect(res.status).toBe(204)
     })
 
     it('should return a 404 status code when trying to delete the same product twice', async () => {
-      const _res = await client.api.products[':id'].$delete({
-        param: {
-          id: ValidProductId
+      const _res = await client.api.products[':id'].$delete(
+        {
+          param: {
+            id: ValidProductId
+          }
+        },
+        {
+          headers: {
+            Cookie: `${adminToken}`
+          }
         }
-      })
+      )
       expect(_res.status).toBe(204)
 
-      const res = await client.api.products[':id'].$delete({
-        param: {
-          id: ValidProductId
+      const res = await client.api.products[':id'].$delete(
+        {
+          param: {
+            id: ValidProductId
+          }
+        },
+        {
+          headers: {
+            Cookie: `${adminToken}`
+          }
         }
-      })
+      )
 
       expect(res.status).toBe(404)
     })

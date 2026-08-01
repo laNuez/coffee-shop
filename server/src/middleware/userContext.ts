@@ -39,3 +39,22 @@ export const requireAuth = createMiddleware<Variables>(async (c, next) => {
   }
   await next()
 })
+
+export const requireAdmin = createMiddleware<Variables>(async (c, next) => {
+  const user = c.get('currentUser')
+  if (!user) {
+    const response = new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401
+    })
+    throw new HTTPException(401, { res: response })
+  }
+
+  if (user.role !== 'admin') {
+    const response = new Response(JSON.stringify({ error: 'Forbidden' }), {
+      status: 403
+    })
+    throw new HTTPException(403, { res: response })
+  }
+
+  await next()
+})

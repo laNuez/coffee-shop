@@ -1,12 +1,12 @@
 import { createProduct, deleteProduct } from '@server/db/mutations'
 import { getProductById, getProducts } from '@server/db/queries'
 import { productInsertSchema } from '@server/db/schema'
+import { requireAdmin } from '@server/middleware/userContext'
 import { Hono } from 'hono'
 import z from 'zod'
 
 const app = new Hono()
-  // TODO: implement auth
-  .post('/', async (c) => {
+  .post('/', requireAdmin, async (c) => {
     const body = await c.req.json()
     const { data, success, error } = productInsertSchema.safeParse(body)
 
@@ -24,7 +24,7 @@ const app = new Hono()
     return c.json(products)
   })
 
-  .delete('/:id', async (c) => {
+  .delete('/:id', requireAdmin, async (c) => {
     const id = c.req.param('id')
     const { rowsAffected } = await deleteProduct(id)
 
