@@ -12,3 +12,7 @@ export class AuthError extends Error {
     this.name = 'AuthError'
   }
 }
+
+export type ApiError = {
+  error: string
+}

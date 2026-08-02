@@ -60,3 +60,15 @@ export const getCategories = async () => {
   if (!res.ok) throw await res.json()
   return await res.json()
 }
+
+const $login = client.api.login.$post
+export const login = async (username: string, password: string) => {
+  const res = await $login({
+    json: {
+      username,
+      password
+    }
+  })
+  if (!res.ok) throw await res.json()
+  return await res.json()
+}
