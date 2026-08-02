@@ -1,10 +1,10 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { useInput } from '../hooks/useInput'
-import { hcWithType } from 'server/dist/client'
 import { Link, useNavigate } from 'react-router'
-import { SERVER_URL } from '../util/constants'
-
-const client = hcWithType(SERVER_URL)
+import { useMutation } from '@tanstack/react-query'
+import { register } from '../lib/api'
+import { XIcon } from 'lucide-react'
+import { ApiError } from '../util/util'
 
 const RegisterPage = () => {
   const username = useInput('')
@@ -23,30 +23,39 @@ const RegisterPage = () => {
     setValidationError('')
   }, [password.value, confirmPassword.value, email.value, username.value])
 
-  const submit = async (e: FormEvent) => {
+  const registerMutation = useMutation<unknown, ApiError>({
+    mutationFn: () => register(username.value, email.value, password.value),
+    onSuccess: () => navigate('/login')
+  })
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (validationError.length > 0) return
-    const res = await client.api.register.$post({
-      json: {
-        username: username.value,
-        email: email.value,
-        password: password.value
-      }
-    })
-    console.log(res)
-    if (!res.ok) return console.log(res)
-
-    navigate('/login')
+    registerMutation.mutate()
   }
   return (
     <div className="flex justify-center">
       <div>
-        <form onSubmit={submit}>
+        <form onSubmit={handleSubmit}>
           <div className="gap 3 card flex w-96 flex-col justify-between p-2 shadow-md">
             <div className="card-body">
               <div className="card-title">
                 <h2 className="text-2xl">Sign up to Coffee-shop</h2>
               </div>
+              {registerMutation.error && (
+                <div
+                  role="alert"
+                  className="alert alert-error alert-outline flex justify-between"
+                >
+                  <span>{registerMutation.error.error}</span>
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-circle btn-xs"
+                    onClick={registerMutation.reset}
+                  >
+                    <XIcon color="red" strokeWidth={1.5} />
+                  </button>
+                </div>
+              )}
               <label>
                 <span>Username</span>
                 <input

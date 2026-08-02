@@ -72,3 +72,20 @@ export const login = async (username: string, password: string) => {
   if (!res.ok) throw await res.json()
   return await res.json()
 }
+
+const $register = client.api.register.$post
+export const register = async (
+  username: string,
+  email: string,
+  password: string
+) => {
+  const res = await $register({
+    json: {
+      username,
+      email,
+      password
+    }
+  })
+  if (!res.ok) throw await res.json()
+  return await res.json()
+}
