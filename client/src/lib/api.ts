@@ -70,7 +70,7 @@ export const login = async (username: string, password: string) => {
     }
   })
   if (!res.ok) throw await res.json()
-  return await res.json()
+  return res
 }
 
 const $register = client.api.register.$post
