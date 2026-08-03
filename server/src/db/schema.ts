@@ -90,6 +90,12 @@ export const productInsertSchema = createInsertSchema(productsTable, {
   id: true
 })
 
+export const productUpdateSchema = productInsertSchema
+  .partial()
+  .refine((obj) => Object.keys(obj).length > 0, {
+    error: 'Requires at least one valid field'
+  })
+
 export const cartItemInsertSchema = createInsertSchema(cartItemsTable).omit({
   id: true
 })
@@ -109,6 +115,8 @@ export type updateCartItem = z.infer<typeof cartItemPatchSchema>
 export type insertCartItem = z.infer<typeof cartItemInsertSchema>
 
 export type insertProduct = z.infer<typeof productInsertSchema>
+
+export type patchProduct = z.infer<typeof productUpdateSchema>
 
 export type insertUser = z.infer<typeof userInsertSchema>
 

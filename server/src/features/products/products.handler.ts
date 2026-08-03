@@ -1,6 +1,14 @@
-import { createProduct, deleteProduct } from '@server/db/mutations'
+import { zValidator } from '@hono/zod-validator'
+import {
+  createProduct,
+  deleteProduct,
+  updateProduct
+} from '@server/db/mutations'
 import { getProductById, getProducts } from '@server/db/queries'
-import { productInsertSchema } from '@server/db/schema'
+import {
+  productInsertSchema,
+  productUpdateSchema,
+} from '@server/db/schema'
 import { requireAdmin } from '@server/middleware/userContext'
 import { Hono } from 'hono'
 import z from 'zod'
@@ -41,4 +49,16 @@ const app = new Hono()
     return c.json(product)
   })
 
+  .patch(
+    '/:id',
+    requireAdmin,
+    zValidator('json', productUpdateSchema),
+    async (c) => {
+      const id = c.req.param('id')
+      const data = c.req.valid('json')
+
+      const product = await updateProduct(id, data)
+      return c.json(product, 200)
+    }
+  )
 export default app

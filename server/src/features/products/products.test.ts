@@ -180,4 +180,53 @@ describe('Products API', () => {
       expect(res.status).toBe(404)
     })
   })
+  
+  describe('PATCH /:id', () => {
+    const mock = mockProducts[0]!
+    it('should update the specified product field', async () => {
+      const res = await client.api.products[':id'].$patch(
+        {
+          param: {
+            id: ValidProductId
+          },
+          json: {
+            name: 'New name'
+          }
+        },
+        {
+          headers: {
+            Cookie: `${adminToken}`
+          }
+        }
+      )
+
+      if (!res.ok) throw new Error(`${res.status}`)
+      const data = await res.json()
+
+      expect(data.name).toEqual('New name')
+      expect(data.description).toEqual(mock.description)
+      expect(res.status).toBe(200)
+    })
+
+    it('should fail if property does not exists', async () => {
+      const res = await client.api.products[':id'].$patch(
+        {
+          param: {
+            id: ValidProductId
+          },
+          json: {
+            // @ts-expect-error
+            invalid: 'bar'
+          }
+        },
+        {
+          headers: {
+            Cookie: `${adminToken}`
+          }
+        }
+      )
+
+      expect(res.status).toBe(400)
+    })
+  })
 })

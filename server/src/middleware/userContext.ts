@@ -15,7 +15,7 @@ export const userContext = createMiddleware(async (c, next) => {
   }
 
   try {
-    const user = await verify(token, ENV.JWT_SECRET)
+    const user = await verify(token, ENV.JWT_SECRET, { alg: 'HS256' })
     c.set('currentUser', user)
     await next()
     return

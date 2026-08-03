@@ -7,6 +7,7 @@ import {
   type insertCartItem,
   type insertProduct,
   type insertUser,
+  type patchProduct,
   type updateCartItem as updateCartItemType
 } from './schema'
 
@@ -28,6 +29,17 @@ export const createProduct = async (data: insertProduct) => {
 
 export const deleteProduct = async (id: string) => {
   return db.delete(productsTable).where(eq(productsTable.id, id))
+}
+
+export const updateProduct = async (id: string, data: patchProduct) => {
+  const [row] = await db
+    .update(productsTable)
+    .set(data)
+    .where(eq(productsTable.id, id))
+    .returning()
+  if (!row) throw new Error('Failed to update or retrieve product')
+
+  return row
 }
 
 export const addToCart = async (data: insertCartItem) => {
