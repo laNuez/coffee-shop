@@ -31,30 +31,17 @@ export const userContext = createMiddleware(async (c, next) => {
 
 export const requireAuth = createMiddleware<Variables>(async (c, next) => {
   const user = c.get('currentUser')
-  if (!user) {
-    const response = new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401
-    })
-    throw new HTTPException(401, { res: response })
-  }
+  if (!user) throw new HTTPException(401, { message: 'Unauthorized' })
+
   await next()
 })
 
 export const requireAdmin = createMiddleware<Variables>(async (c, next) => {
   const user = c.get('currentUser')
-  if (!user) {
-    const response = new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401
-    })
-    throw new HTTPException(401, { res: response })
-  }
+  if (!user) throw new HTTPException(401, { message: 'Unauthorized' })
 
-  if (user.role !== 'admin') {
-    const response = new Response(JSON.stringify({ error: 'Forbidden' }), {
-      status: 403
-    })
-    throw new HTTPException(403, { res: response })
-  }
+  if (user.role !== 'admin')
+    throw new HTTPException(403, { message: 'Forbidden' })
 
   await next()
 })
