@@ -21,3 +21,4 @@ export interface LoginForm {
 }
 
 export type ProductForm = Omit<Product, 'id'>
+export type ProductEdit = Partial<ProductForm>

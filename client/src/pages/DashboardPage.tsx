@@ -5,11 +5,11 @@ import {
   useQueryClient,
   useSuspenseQuery
 } from '@tanstack/react-query'
-import { addProduct, deleteProduct, getProducts } from '../lib/api'
+import { addProduct, deleteProduct, editProduct, getProducts } from '../lib/api'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
 import { ProductFormModal } from '../components/ProductFormModal'
 import { useState } from 'react'
-import { Product, ProductForm } from 'shared'
+import { Product, ProductEdit, ProductForm } from 'shared'
 import { formatCents } from '../util/util'
 
 const productsQuery = () =>
@@ -51,6 +51,18 @@ const DashboardPage = () => {
     }
   })
 
+  const productEditMutation = useMutation({
+    mutationKey: ['products', 'admin'],
+    mutationFn: ({ id, data }: { id: string; data: ProductEdit }) =>
+      editProduct(id, data),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ['products'] })
+      setProduct(undefined)
+      setIsOpen(false)
+      setFormKey(Date.now())
+    }
+  })
+
   const handleEdit = (id: string) => {
     const p = products.find((p) => p.id == id)
     if (!p) throw new Error('product missing')
@@ -66,6 +78,13 @@ const DashboardPage = () => {
     productAddMutation.mutate(data)
   }
 
+  const edit = (id: string, data: ProductEdit) => {
+    productEditMutation.mutate({
+      id,
+      data
+    })
+  }
+
   const onClose = () => {
     setProduct(undefined)
     setIsOpen(false)
@@ -79,6 +98,7 @@ const DashboardPage = () => {
         product={product}
         key={product ? product.id : `new-${formKey}`}
         handleAdd={handleAdd}
+        handleEdit={edit}
         isOpen={isOpen}
         onClose={onClose}
       />

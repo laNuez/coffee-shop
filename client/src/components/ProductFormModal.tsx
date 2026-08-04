@@ -1,17 +1,18 @@
 import { FormEvent, useEffect, useRef } from 'react'
-import { Product, ProductForm } from 'shared'
+import { Product, ProductEdit, ProductForm } from 'shared'
 import { formatCents } from '../util/util'
 
 type Props = {
   product?: Product
   handleAdd: (data: ProductForm) => void
+  handleEdit: (id: string, data: ProductEdit) => void
   isOpen: boolean
   onClose: () => void
   error?: string
 }
 
 export const ProductFormModal = (props: Props) => {
-  const { product, onClose, isOpen, handleAdd } = props
+  const { product, onClose, isOpen, handleAdd, handleEdit } = props
 
   const isEdit = !!product
 
@@ -30,22 +31,27 @@ export const ProductFormModal = (props: Props) => {
     const form = e.target as HTMLFormElement
     const formData = new FormData(form)
 
-    const name = formData.get('name') as string
-    const description = formData.get('description') as string
-    const category = formData.get('category') as string
-    const price = formData.get('price') as string
-
-    // TODO
-    if (isEdit) {
-      return
+    const formValues: ProductForm = {
+      name: formData.get('name') as string,
+      description: formData.get('description') as string,
+      category: formData.get('category') as string,
+      price: Number(formData.get('price') as string)
     }
 
-    handleAdd({
-      category: category,
-      description: description,
-      name: name,
-      price: Number(price)
-    })
+    if (isEdit) {
+      const p: ProductEdit = {}
+      const keys = Object.keys(formValues) as (keyof typeof formValues)[]
+
+      keys.forEach((k) => {
+        if (formValues[k] !== product[k]) {
+          p[k] = formValues[k] as never
+        }
+      })
+
+      if (Object.keys(p).length) return handleEdit(product.id, p)
+    }
+
+    handleAdd(formValues)
   }
 
   return (
