@@ -9,15 +9,15 @@ import { formatCents } from '../util/util'
 
 import { delCartItem, getCart } from '../lib/api'
 import { X } from 'lucide-react'
-import { NavLink } from 'react-router'
+import { NavLink, redirect } from 'react-router'
 
 const cartQuery = queryOptions({
   queryKey: ['cart'],
   queryFn: getCart
 })
 
-export const loader = (queryClient: QueryClient) => () => {
-  return queryClient.ensureQueryData(cartQuery)
+export const loader = (queryClient: QueryClient) => async () => {
+  queryClient.ensureQueryData(cartQuery).catch(() => redirect('/login'))
 }
 
 const CartPage = () => {
