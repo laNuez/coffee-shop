@@ -46,6 +46,11 @@ export const Header = () => {
             <li>
               <NavLink to="/products">Products</NavLink>
             </li>
+            {user?.role === 'admin' && (
+              <li>
+                <NavLink to="admin/dashboard">Dashboard</NavLink>
+              </li>
+            )}
           </ul>
         </div>
         <div className="hidden lg:flex">
@@ -55,6 +60,11 @@ export const Header = () => {
           <NavLink className="btn btn-ghost" to="/products">
             Products
           </NavLink>
+          {user?.role === 'admin' && (
+            <NavLink className="btn btn-ghost" to="admin/dashboard">
+              Dashboard
+            </NavLink>
+          )}
         </div>
       </div>
       <div className="navbar-center"></div>

@@ -1,5 +1,6 @@
 import { InferRequestType, InferResponseType } from 'hono'
 import { client } from './hono'
+import { ProductForm } from 'shared'
 
 const $getProducts = client.api.products.$get
 export type ProductsResponse = InferResponseType<typeof $getProducts>
@@ -21,6 +22,31 @@ export const getProduct = async (id: string) => {
   })
   if (!res.ok) throw await res.json()
   return await res.json()
+}
+
+export const deleteProduct = async (id: string) => {
+  const res = await client.api.products[':id'].$delete({ param: { id } })
+  if (!res.ok) throw await res.json()
+  return res
+}
+
+export const addProduct = async (args: ProductForm) => {
+  const res = await client.api.products.$post({
+    json: args
+  })
+  if (!res.ok) throw await res.json()
+  return await res.json()
+}
+
+export const editProduct = async (id: string, args: ProductForm) => {
+  const res = await client.api.products[':id'].$patch({
+    json: args,
+    param: {
+      id
+    }
+  })
+  if (!res.ok) throw await res.json()
+  return res.json()
 }
 
 export const getCart = async () => {

@@ -10,8 +10,10 @@ import LoginPage from './pages/LoginPage'
 import ProductPage, { loader as productLoader } from './pages/ProductPage'
 import ProductsPage, { loader as productsLoader } from './pages/ProductsPage'
 import SignUpPage from './pages/RegisterPage'
+import DashboardPage from './pages/DashboardPage'
 import { RequireAuth } from './components/RequireAuth'
 import { queryClient } from './lib/query'
+import { RequireAdmin } from './components/RequireAdmin'
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -40,6 +42,15 @@ export const router = createBrowserRouter(
       <Route
         path="products"
         element={<ProductsPage />}
+        loader={productsLoader(queryClient)}
+      />
+      <Route
+        path="admin/dashboard"
+        element={
+          <RequireAdmin>
+            <DashboardPage />
+          </RequireAdmin>
+        }
         loader={productsLoader(queryClient)}
       />
     </Route>
