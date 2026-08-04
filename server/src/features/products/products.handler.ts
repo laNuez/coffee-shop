@@ -5,10 +5,7 @@ import {
   updateProduct
 } from '@server/db/mutations'
 import { getProductById, getProducts } from '@server/db/queries'
-import {
-  productInsertSchema,
-  productUpdateSchema,
-} from '@server/db/schema'
+import { productInsertSchema, productUpdateSchema } from '@server/db/schema'
 import { requireAdmin } from '@server/middleware/userContext'
 import { Hono } from 'hono'
 import z from 'zod'

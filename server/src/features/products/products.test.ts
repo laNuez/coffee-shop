@@ -1,15 +1,9 @@
 import { db } from '@server/db/client'
-import { productsTable, usersTable, } from '@server/db/schema'
+import { productsTable, usersTable } from '@server/db/schema'
 import app from '@server/index'
 import { mockProducts } from '@server/mock'
 import { createTestAdmin } from '@server/tests/helpers'
-import {
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from 'bun:test'
+import { beforeAll, beforeEach, describe, expect, it } from 'bun:test'
 import { testClient } from 'hono/testing'
 
 const client = testClient(app)
@@ -180,7 +174,7 @@ describe('Products API', () => {
       expect(res.status).toBe(404)
     })
   })
-  
+
   describe('PATCH /:id', () => {
     const mock = mockProducts[0]!
     it('should update the specified product field', async () => {
