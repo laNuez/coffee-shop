@@ -65,7 +65,7 @@ const app = new Hono()
       const id = c.req.param('id')
       const data = c.req.valid('form')
 
-      const product = productService.update(id, data)
+      const product = await productService.update(id, data)
       return c.json(product, 200)
     }
   )

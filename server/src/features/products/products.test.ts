@@ -2,7 +2,12 @@ import { db } from '@server/db/client'
 import { productsTable, usersTable } from '@server/db/schema'
 import app from '@server/index'
 import { mockProducts } from '@server/mock'
-import { createTestAdmin } from '@server/tests/helpers'
+import {
+  createTestAdmin,
+  getProductWithImage,
+  parseMock,
+  productRequestToRecord
+} from '@server/tests/helpers'
 import { beforeAll, beforeEach, describe, expect, it } from 'bun:test'
 import { testClient } from 'hono/testing'
 
@@ -10,6 +15,8 @@ const client = testClient(app)
 
 describe('Products API', () => {
   let adminToken: string
+
+  const mock = getProductWithImage()
 
   beforeAll(async () => {
     await db.delete(usersTable)
@@ -21,7 +28,7 @@ describe('Products API', () => {
     await db.delete(productsTable)
     const result = await db
       .insert(productsTable)
-      .values(mockProducts)
+      .values(mockProducts.map(productRequestToRecord))
       .returning()
     ValidProductId = result[0]!.id
   })
@@ -90,10 +97,9 @@ describe('Products API', () => {
 
   describe('POST /', () => {
     it('should return a 201 and the product if the body is valid', async () => {
-      const mock = mockProducts[0]!
       const res = await client.api.products.$post(
         {
-          json: mock
+          form: parseMock(mock)
         },
         {
           headers: {
@@ -110,10 +116,12 @@ describe('Products API', () => {
     })
 
     it('should return a 400 when the price is missing', async () => {
-      const { price, ...mock } = mockProducts[0]!
+      const { price, ...rest } = mock
+
       const res = await client.api.products.$post(
         {
-          json: mock
+          // @ts-expect-error
+          form: rest
         },
         {
           headers: {
@@ -121,7 +129,6 @@ describe('Products API', () => {
           }
         }
       )
-
       expect(res.status).toBe(400)
     })
   })
@@ -183,7 +190,7 @@ describe('Products API', () => {
           param: {
             id: ValidProductId
           },
-          json: {
+          form: {
             name: 'New name'
           }
         },
@@ -208,7 +215,7 @@ describe('Products API', () => {
           param: {
             id: ValidProductId
           },
-          json: {
+          form: {
             // @ts-expect-error
             invalid: 'bar'
           }

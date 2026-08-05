@@ -9,6 +9,7 @@ export interface Product {
   price: number
   category: string
   description: string
+  image: string
 }
 
 export interface Token {
@@ -21,4 +22,13 @@ export interface LoginForm {
 }
 
 export type ProductForm = Omit<Product, 'id'>
+
+export type CreateProductRequest<TImage> = Omit<
+  Product,
+  'id' | 'image' | 'price'
+> & {
+  price: string
+  image: TImage
+}
+
 export type ProductEdit = Partial<ProductForm>

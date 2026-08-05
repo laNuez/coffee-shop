@@ -2,7 +2,7 @@
 import type { ValidationTargets } from 'hono'
 import { zValidator as zv } from '@hono/zod-validator'
 import { HTTPException } from 'hono/http-exception'
-import type z from 'zod'
+import z from 'zod'
 
 export const zValidator = <
   T extends z.ZodSchema,
@@ -13,8 +13,9 @@ export const zValidator = <
 ) =>
   zv(target, schema, (result, c) => {
     if (!result.success) {
+      if (process.env.NODE_ENV !== 'production') {
+        return c.json({ error: z.treeifyError(result.error) }, 400)
+      }
       throw new HTTPException(400, { message: 'Bad request' })
     }
   })
-
-// return c.json({ error: z.treeifyError(result.error) }, 400)
