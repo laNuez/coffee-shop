@@ -1,27 +1,38 @@
-import { zValidator } from '@hono/zod-validator'
-import {
-  createProduct,
-  deleteProduct,
-  updateProduct
-} from '@server/db/mutations'
+import { zValidator } from '@server/utils/zod-validator'
+import { createProduct, deleteProduct } from '@server/db/mutations'
 import { getProductById, getProducts } from '@server/db/queries'
 import { productInsertSchema, productUpdateSchema } from '@server/db/schema'
 import { requireAdmin } from '@server/middleware/userContext'
 import { Hono } from 'hono'
-import z from 'zod'
+import { deleteImage, uploadImage } from './images.storage'
+import productService from './products.service'
 
 const app = new Hono()
-  .post('/', requireAdmin, async (c) => {
-    const body = await c.req.json()
-    const { data, success, error } = productInsertSchema.safeParse(body)
+  .post(
+    '/',
+    requireAdmin,
+    zValidator('form', productInsertSchema),
+    async (c) => {
+      const data = c.req.valid('form')
 
-    if (!success) return c.json({ error: z.treeifyError(error) }, 400)
+      let imageKey: string | undefined
+      try {
+        imageKey = await uploadImage(data.image)
+        const [product] = await createProduct({
+          ...data,
+          image: imageKey
+        })
 
-    const [product] = await createProduct(data)
-    if (!product) return c.json({ error: 'something went wrong' }, 500)
+        if (!product) throw new Error('something went wrong')
 
-    return c.json(product, 201)
-  })
+        return c.json(product, 201)
+      } catch (error) {
+        console.error(error)
+        if (imageKey) await deleteImage(imageKey)
+        return c.json({ error: 'something went wrong' }, 500)
+      }
+    }
+  )
 
   .get('/', async (c) => {
     const { category } = c.req.query()
@@ -49,12 +60,12 @@ const app = new Hono()
   .patch(
     '/:id',
     requireAdmin,
-    zValidator('json', productUpdateSchema),
+    zValidator('form', productUpdateSchema),
     async (c) => {
       const id = c.req.param('id')
-      const data = c.req.valid('json')
+      const data = c.req.valid('form')
 
-      const product = await updateProduct(id, data)
+      const product = productService.update(id, data)
       return c.json(product, 200)
     }
   )

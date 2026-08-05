@@ -5,7 +5,7 @@ import {
   createSelectSchema,
   createUpdateSchema
 } from 'drizzle-zod'
-import type z from 'zod'
+import z from 'zod'
 export const productsTable = sqliteTable('products_table', {
   id: text()
     .primaryKey()
@@ -13,7 +13,8 @@ export const productsTable = sqliteTable('products_table', {
   name: text().notNull(),
   price: int().notNull(),
   category: text().notNull(),
-  description: text().notNull()
+  description: text().notNull(),
+  image: text().notNull()
 })
 
 export const usersTable = sqliteTable('users_table', {
@@ -81,13 +82,34 @@ export const userInsertSchema = createInsertSchema(usersTable, {
   role: true
 })
 
-export const productInsertSchema = createInsertSchema(productsTable, {
+const productInsertSchemaDB = createInsertSchema(productsTable, {
   category: (schema) => schema.min(3),
-  price: (schema) => schema.min(100),
+  price: (schema) => schema.int().min(100),
   description: (schema) => schema.min(3).max(3000),
-  name: (schema) => schema.min(6)
+  name: (schema) => schema.min(6),
+  image: (schema) => schema.min(1)
 }).omit({
   id: true
+})
+
+// https://stackoverflow.com/questions/72674930/zod-validator-validate-image
+const MAX_FILE_SIZE = 5000000
+export const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png'
+] as const
+
+export const productInsertSchema = productInsertSchemaDB.extend({
+  price: z.coerce.number().int().min(100),
+  image: z
+    .instanceof(File)
+    .refine((file) => file.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+    .refine(
+      // @ts-ignore
+      (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
+      'Only .jpg, .jpeg, and .png formats are supported.'
+    )
 })
 
 export const productUpdateSchema = productInsertSchema
@@ -95,6 +117,12 @@ export const productUpdateSchema = productInsertSchema
   .refine((obj) => Object.keys(obj).length > 0, {
     error: 'Requires at least one valid field'
   })
+
+export const productUpdateSchemaDB = productInsertSchema
+  .extend({
+    image: z.string().min(1)
+  })
+  .partial()
 
 export const cartItemInsertSchema = createInsertSchema(cartItemsTable).omit({
   id: true
@@ -114,9 +142,13 @@ export type updateCartItem = z.infer<typeof cartItemPatchSchema>
 
 export type insertCartItem = z.infer<typeof cartItemInsertSchema>
 
-export type insertProduct = z.infer<typeof productInsertSchema>
+export type insertProduct = z.infer<typeof productInsertSchemaDB>
+
+export type formProduct = z.infer<typeof productInsertSchema>
 
 export type patchProduct = z.infer<typeof productUpdateSchema>
+
+export type patchProductDB = z.infer<typeof productUpdateSchemaDB>
 
 export type insertUser = z.infer<typeof userInsertSchema>
 

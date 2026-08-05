@@ -7,7 +7,7 @@ import {
   type insertCartItem,
   type insertProduct,
   type insertUser,
-  type patchProduct,
+  type patchProductDB,
   type updateCartItem as updateCartItemType
 } from './schema'
 
@@ -31,7 +31,7 @@ export const deleteProduct = async (id: string) => {
   return db.delete(productsTable).where(eq(productsTable.id, id))
 }
 
-export const updateProduct = async (id: string, data: patchProduct) => {
+export const updateProduct = async (id: string, data: patchProductDB) => {
   const [row] = await db
     .update(productsTable)
     .set(data)
