@@ -38,7 +38,10 @@ export const addProduct = async (args: CreateProductRequest<File>) => {
   return await res.json()
 }
 
-export const editProduct = async (id: string, args: UpdateProductRequest<File>) => {
+export const editProduct = async (
+  id: string,
+  args: UpdateProductRequest<File>
+) => {
   const res = await client.api.products[':id'].$patch({
     form: args,
     param: {

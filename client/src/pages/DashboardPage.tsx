@@ -11,6 +11,7 @@ import { ProductFormModal } from '../components/ProductFormModal'
 import { useState } from 'react'
 import { CreateProductRequest, Product, UpdateProductRequest } from 'shared'
 import { formatCents } from '../util/util'
+import { getImageUrl } from '../util/util'
 
 const productsQuery = () =>
   queryOptions({
@@ -53,8 +54,13 @@ const DashboardPage = () => {
 
   const productEditMutation = useMutation({
     mutationKey: ['products', 'admin'],
-    mutationFn: ({ id, data }: { id: string; data: UpdateProductRequest<File> }) =>
-      editProduct(id, data),
+    mutationFn: ({
+      id,
+      data
+    }: {
+      id: string
+      data: UpdateProductRequest<File>
+    }) => editProduct(id, data),
     onSuccess: () => {
       client.invalidateQueries({ queryKey: ['products'] })
       setProduct(undefined)
@@ -135,8 +141,8 @@ const DashboardPage = () => {
                 <td>
                   <img
                     width={'100px'}
-                    src="https://placehold.co/600x400"
-                    alt="https://placehold.co/600x400"
+                    src={getImageUrl(p.image)}
+                    alt={p.name}
                   />
                 </td>
                 <td>{p.name}</td>

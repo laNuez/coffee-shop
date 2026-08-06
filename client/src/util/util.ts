@@ -16,3 +16,9 @@ export class AuthError extends Error {
 export type ApiError = {
   error: string
 }
+
+export const getImageUrl = (key: string) => {
+  return key
+    ? `${import.meta.env.VITE_IMAGE_PREFIX_URL}${key}`
+    : 'https://placehold.co/600x400'
+}

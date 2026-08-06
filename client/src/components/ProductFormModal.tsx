@@ -25,11 +25,10 @@ export const ProductFormModal = (props: Props) => {
     dialogRef.current.close()
   }, [isOpen])
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const form = e.target as HTMLFormElement
-    const formData = new FormData(form)
+    const formData = new FormData(e.currentTarget)
 
     const formValues: CreateProductRequest<File> = {
       name: formData.get('name') as string,
@@ -45,11 +44,15 @@ export const ProductFormModal = (props: Props) => {
 
       keys.forEach((k) => {
         if (formValues[k] !== product[k]) {
+          if (k === 'image') {
+            if (!formValues.image.name) return
+          }
           p[k] = formValues[k] as never
         }
       })
+      if (Object.keys(p).length) handleEdit(product.id, p)
 
-      if (Object.keys(p).length) return handleEdit(product.id, p)
+      return
     }
 
     handleAdd(formValues)
@@ -131,10 +134,10 @@ export const ProductFormModal = (props: Props) => {
                 <legend className="fieldset-legend">Image</legend>
                 <input
                   type="file"
-                  className="file-input w-full"
+                  className="file-input validator w-full"
                   accept=".png, .jpg, .jpeg"
                   id="image"
-                  name='image'
+                  name="image"
                   required={!isEdit}
                 />
                 <legend className="fieldset-label">.png, jpg, jpeg</legend>

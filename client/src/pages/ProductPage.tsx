@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-query'
 import { LoaderFunctionArgs, useParams } from 'react-router'
 import { addToCart, AddToCartInput, getProduct } from '../lib/api'
-import { formatCents } from '../util/util'
+import { formatCents, getImageUrl } from '../util/util'
 import { useState } from 'react'
 import { Plus, Minus, Check } from 'lucide-react'
 type ProductParams = {
@@ -59,10 +59,7 @@ const ProductPage = () => {
       <div className="grid items-center md:grid-cols-2">
         <div className="p-4">
           <figure>
-            <img
-              src="https://placehold.co/600x400"
-              alt="https://placehold.co/600x400"
-            />
+            <img src={getImageUrl(product.image)} alt={product.name} />
           </figure>
         </div>
         <div className="flex max-w-96 flex-col gap-2 p-4">
