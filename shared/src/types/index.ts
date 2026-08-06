@@ -21,8 +21,6 @@ export interface LoginForm {
   password: string
 }
 
-export type ProductForm = Omit<Product, 'id'>
-
 export type CreateProductRequest<TImage> = Omit<
   Product,
   'id' | 'image' | 'price'
@@ -31,4 +29,4 @@ export type CreateProductRequest<TImage> = Omit<
   image: TImage
 }
 
-export type ProductEdit = Partial<ProductForm>
+export type UpdateProductRequest<T> = Partial<CreateProductRequest<T>>

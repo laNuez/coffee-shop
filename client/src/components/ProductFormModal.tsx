@@ -1,11 +1,11 @@
 import { FormEvent, useEffect, useRef } from 'react'
-import { Product, ProductEdit, ProductForm } from 'shared'
+import { CreateProductRequest, Product, UpdateProductRequest } from 'shared'
 import { formatCents } from '../util/util'
 
 type Props = {
   product?: Product
-  handleAdd: (data: ProductForm) => void
-  handleEdit: (id: string, data: ProductEdit) => void
+  handleAdd: (data: CreateProductRequest<File>) => void
+  handleEdit: (id: string, data: UpdateProductRequest<File>) => void
   isOpen: boolean
   onClose: () => void
   error?: string
@@ -31,15 +31,16 @@ export const ProductFormModal = (props: Props) => {
     const form = e.target as HTMLFormElement
     const formData = new FormData(form)
 
-    const formValues: ProductForm = {
+    const formValues: CreateProductRequest<File> = {
       name: formData.get('name') as string,
       description: formData.get('description') as string,
       category: formData.get('category') as string,
-      price: Number(formData.get('price') as string)
+      price: formData.get('price') as string,
+      image: formData.get('image') as File
     }
 
     if (isEdit) {
-      const p: ProductEdit = {}
+      const p: UpdateProductRequest<File> = {}
       const keys = Object.keys(formValues) as (keyof typeof formValues)[]
 
       keys.forEach((k) => {
@@ -132,6 +133,9 @@ export const ProductFormModal = (props: Props) => {
                   type="file"
                   className="file-input w-full"
                   accept=".png, .jpg, .jpeg"
+                  id="image"
+                  name='image'
+                  required={!isEdit}
                 />
                 <legend className="fieldset-label">.png, jpg, jpeg</legend>
               </div>

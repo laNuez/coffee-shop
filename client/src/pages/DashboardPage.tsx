@@ -9,7 +9,7 @@ import { addProduct, deleteProduct, editProduct, getProducts } from '../lib/api'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
 import { ProductFormModal } from '../components/ProductFormModal'
 import { useState } from 'react'
-import { Product, ProductEdit, ProductForm } from 'shared'
+import { CreateProductRequest, Product, UpdateProductRequest } from 'shared'
 import { formatCents } from '../util/util'
 
 const productsQuery = () =>
@@ -42,7 +42,7 @@ const DashboardPage = () => {
 
   const productAddMutation = useMutation({
     mutationKey: ['products', 'admin'],
-    mutationFn: (data: ProductForm) => addProduct(data),
+    mutationFn: (data: CreateProductRequest<File>) => addProduct(data),
     onSuccess: () => {
       client.invalidateQueries({ queryKey: ['products'] })
       setProduct(undefined)
@@ -53,7 +53,7 @@ const DashboardPage = () => {
 
   const productEditMutation = useMutation({
     mutationKey: ['products', 'admin'],
-    mutationFn: ({ id, data }: { id: string; data: ProductEdit }) =>
+    mutationFn: ({ id, data }: { id: string; data: UpdateProductRequest<File> }) =>
       editProduct(id, data),
     onSuccess: () => {
       client.invalidateQueries({ queryKey: ['products'] })
@@ -74,11 +74,11 @@ const DashboardPage = () => {
     productDeleteMutation.mutate(id)
   }
 
-  const handleAdd = (data: ProductForm) => {
+  const handleAdd = (data: CreateProductRequest<File>) => {
     productAddMutation.mutate(data)
   }
 
-  const edit = (id: string, data: ProductEdit) => {
+  const edit = (id: string, data: UpdateProductRequest<File>) => {
     productEditMutation.mutate({
       id,
       data

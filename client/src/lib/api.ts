@@ -1,6 +1,6 @@
 import { InferRequestType, InferResponseType } from 'hono'
 import { client } from './hono'
-import { ProductEdit, ProductForm } from 'shared'
+import { CreateProductRequest, UpdateProductRequest } from 'shared'
 
 const $getProducts = client.api.products.$get
 export type ProductsResponse = InferResponseType<typeof $getProducts>
@@ -30,17 +30,17 @@ export const deleteProduct = async (id: string) => {
   return res
 }
 
-export const addProduct = async (args: ProductForm) => {
+export const addProduct = async (args: CreateProductRequest<File>) => {
   const res = await client.api.products.$post({
-    json: args
+    form: args
   })
   if (!res.ok) throw await res.json()
   return await res.json()
 }
 
-export const editProduct = async (id: string, args: ProductEdit) => {
+export const editProduct = async (id: string, args: UpdateProductRequest<File>) => {
   const res = await client.api.products[':id'].$patch({
-    json: args,
+    form: args,
     param: {
       id
     }
