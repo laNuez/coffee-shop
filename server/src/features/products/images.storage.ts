@@ -1,13 +1,18 @@
 import { ACCEPTED_IMAGE_TYPES } from '@server/db/schema'
 import { ENV } from '@server/env'
-import { S3Client } from 'bun'
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client
+} from '@aws-sdk/client-s3'
 
 const storage = new S3Client({
   region: 'auto',
   endpoint: ENV.BUCKET_ENDPOINT,
-  bucket: ENV.BUCKET_NAME,
-  accessKeyId: ENV.BUCKET_ID,
-  secretAccessKey: ENV.BUCKET_SECRET
+  credentials: {
+    accessKeyId: ENV.BUCKET_ID,
+    secretAccessKey: ENV.BUCKET_SECRET
+  }
 })
 
 export const uploadImage = async (file: File): Promise<string> => {
@@ -17,13 +22,24 @@ export const uploadImage = async (file: File): Promise<string> => {
 
   const key = `images/${crypto.randomUUID()}.${contentType.split('/')[1]}`
 
-  await storage.write(key, file, {
-    type: contentType
-  })
+  const buffer = Buffer.from(await file.arrayBuffer())
+  await storage.send(
+    new PutObjectCommand({
+      Bucket: ENV.BUCKET_NAME,
+      Key: key,
+      Body: buffer,
+      ContentType: contentType
+    })
+  )
 
   return key
 }
 
 export const deleteImage = async (key: string) => {
-  await storage.delete(key)
+  await storage.send(
+    new DeleteObjectCommand({
+      Bucket: ENV.BUCKET_NAME,
+      Key: key
+    })
+  )
 }

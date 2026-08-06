@@ -15,6 +15,10 @@
     {
       "pattern": "coffee.nuezky.tk",
       "custom_domain": true
+    },
+    {
+      "pattern": "coffee.nuez.dev",
+      "custom_domain": true
     }
   ]
 }
