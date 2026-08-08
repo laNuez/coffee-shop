@@ -118,3 +118,9 @@ export const register = async (
   if (!res.ok) throw await res.json()
   return await res.json()
 }
+
+export const checkout = async () => {
+  const res = await client.api.orders['checkout'].$post()
+  if (!res.ok) throw await res.json()
+  return await res.json()
+}

@@ -1,4 +1,4 @@
-import { getCartByUserId } from '@server/db/queries'
+import { getCartByUserId, getOrder } from '@server/db/queries'
 
 export interface UserFromToken {
   id: string
@@ -15,3 +15,5 @@ export type Variables = {
     currentUser: null | UserFromToken
   }
 }
+
+export type Order = NonNullable<Awaited<ReturnType<typeof getOrder>>>

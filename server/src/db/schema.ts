@@ -54,7 +54,9 @@ export const ordersTable = sqliteTable('orders_table', {
   id: text()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  userId: text().references(() => usersTable.id),
+  userId: text()
+    .references(() => usersTable.id)
+    .notNull(),
   totalAmount: int().notNull(),
   status: text({
     enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
@@ -66,9 +68,13 @@ export const orderItemsTable = sqliteTable('order_items_table', {
   id: text()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  orderId: text().references(() => ordersTable.id),
-  productId: text().references(() => productsTable.id),
-  quantity: int().default(1),
+  orderId: text()
+    .references(() => ordersTable.id)
+    .notNull(),
+  productId: text()
+    .references(() => productsTable.id)
+    .notNull(),
+  quantity: int().default(1).notNull(),
   price: int().notNull()
 })
 
@@ -138,6 +144,13 @@ export const cartItemPatchSchema = createUpdateSchema(cartItemsTable, {
     quantity: true
   })
 
+const orderInsertSchema = createInsertSchema(ordersTable)
+
+const orderUpdateSchema = createUpdateSchema(ordersTable)
+
+const orderItemInsertSchema = createInsertSchema(orderItemsTable)
+const orderItemUpdateSchema = createUpdateSchema(orderItemsTable)
+
 export type updateCartItem = z.infer<typeof cartItemPatchSchema>
 
 export type insertCartItem = z.infer<typeof cartItemInsertSchema>
@@ -152,6 +165,14 @@ export type patchProductDB = z.infer<typeof productUpdateSchemaDB>
 
 export type insertUser = z.infer<typeof userInsertSchema>
 
+export type insertOrder = z.infer<typeof orderInsertSchema>
+
+export type updateOrder = z.infer<typeof orderUpdateSchema>
+
+export type insertOrderItem = z.infer<typeof orderItemInsertSchema>
+
+export type updateOrderItem = z.infer<typeof orderItemUpdateSchema>
+
 export const cartItemsRelations = relations(cartItemsTable, ({ one }) => ({
   customer: one(usersTable, {
     fields: [cartItemsTable.userId],
@@ -165,4 +186,19 @@ export const cartItemsRelations = relations(cartItemsTable, ({ one }) => ({
 
 export const usersRelations = relations(usersTable, ({ many }) => ({
   cart: many(cartItemsTable)
+}))
+
+export const orderItemRelations = relations(orderItemsTable, ({ one }) => ({
+  order: one(ordersTable, {
+    fields: [orderItemsTable.orderId],
+    references: [ordersTable.id]
+  }),
+  product: one(productsTable, {
+    fields: [orderItemsTable.productId],
+    references: [productsTable.id]
+  })
+}))
+
+export const orderRelations = relations(ordersTable, ({ many }) => ({
+  items: many(orderItemsTable)
 }))

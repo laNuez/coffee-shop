@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-query'
 import { formatCents } from '../util/util'
 
-import { delCartItem, getCart } from '../lib/api'
+import { checkout, delCartItem, getCart } from '../lib/api'
 import { X } from 'lucide-react'
 import { NavLink, redirect } from 'react-router'
 
@@ -34,6 +34,11 @@ const CartPage = () => {
   const handleDel = (id: string) => {
     itemDelMutation.mutate(id)
   }
+
+  const checkoutMutation = useMutation({
+    mutationFn: checkout,
+    onSuccess: (checkoutSession) => (window.location.href = checkoutSession.url)
+  })
 
   return (
     <div className="mx-auto grid min-h-96 max-w-4xl grid-cols-1 p-4 lg:grid-cols-[2fr_1fr]">
@@ -100,7 +105,15 @@ const CartPage = () => {
           <span>Total</span>
           <span>Free</span>
         </div>
-        <button className="btn btn-primary w-full">Proceed to Checkout</button>
+        <button
+          className="btn btn-primary w-full"
+          onClick={() => checkoutMutation.mutate()}
+          disabled={checkoutMutation.isPending}
+        >
+          {checkoutMutation.isPending || checkoutMutation.isSuccess
+            ? 'Redirecting...'
+            : 'Proceed to Checkout'}
+        </button>
       </div>
     </div>
   )

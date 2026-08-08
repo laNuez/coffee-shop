@@ -1,12 +1,11 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import type { ApiResponse } from 'shared'
-import { mockProducts } from './mock'
 import { userContext } from './middleware/userContext'
 import auth from '@server/features/auth/auth.handler'
 import products from '@server/features/products/products.handler'
 import cart from '@server/features/cart/cart.handler'
 import categories from '@server/features/categories/categories.handler'
+import orders from '@server/features/orders/orders.handler'
 import type { Variables } from './types'
 import { HTTPException } from 'hono/http-exception'
 
@@ -26,6 +25,7 @@ export const app = new Hono<Variables>()
   .route('/categories', categories)
   .route('/products', products)
   .route('/cart', cart)
+  .route('/orders', orders)
   .onError((error, c) => {
     if (error instanceof HTTPException) {
       return c.json({ error: error.message }, error.status)

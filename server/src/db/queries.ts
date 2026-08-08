@@ -1,6 +1,11 @@
 import { and, eq } from 'drizzle-orm'
 import { db } from './client'
-import { cartItemsTable, productsTable, usersTable } from './schema'
+import {
+  cartItemsTable,
+  ordersTable,
+  productsTable,
+  usersTable
+} from './schema'
 
 export const getUserByUsername = async (name: string) => {
   return await db.select().from(usersTable).where(eq(usersTable.username, name))
@@ -13,7 +18,7 @@ export const getCartByUserId = async (id: string) => {
       product: true
     }
   })
-  if (!cart) return null
+
   return cart
 }
 
@@ -39,4 +44,17 @@ export const getCategories = async () => {
   return await db
     .selectDistinct({ category: productsTable.category })
     .from(productsTable)
+}
+
+export const getOrder = async (id: string) => {
+  return await db.query.ordersTable.findFirst({
+    where: eq(ordersTable.id, id),
+    with: {
+      items: {
+        with: {
+          product: true
+        }
+      }
+    }
+  })
 }
