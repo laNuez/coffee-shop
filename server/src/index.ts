@@ -22,19 +22,6 @@ export const app = new Hono<Variables>()
 
   .use('/*', userContext)
 
-  .get('/', (c) => {
-    return c.text('Hello Hono!')
-  })
-
-  .get('/hello', async (c) => {
-    const data: ApiResponse = {
-      message: 'Hello BHVR!',
-      success: true
-    }
-
-    return c.json(data, { status: 200 })
-  })
-
   .route('/', auth)
   .route('/categories', categories)
   .route('/products', products)
