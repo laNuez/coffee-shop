@@ -1,9 +1,10 @@
-import { InferRequestType, InferResponseType } from 'hono'
+import { InferRequestType } from 'hono'
 import { client } from './hono'
 import { CreateProductRequest, UpdateProductRequest } from 'shared'
+import { InferSuccessResponseType } from '../util/util'
 
 const $getProducts = client.api.products.$get
-export type ProductsResponse = InferResponseType<typeof $getProducts>
+export type ProductsResponse = InferSuccessResponseType<typeof $getProducts>
 export const getProducts = async (category?: string) => {
   const res = await $getProducts({
     query: {
@@ -83,7 +84,7 @@ export const addToCart = async (args: AddToCartInput) => {
 }
 
 const $getCategories = client.api.categories.$get
-export type CategoriesResponse = InferResponseType<typeof $getCategories>
+export type CategoriesResponse = InferSuccessResponseType<typeof $getCategories>
 export const getCategories = async () => {
   const res = await $getCategories()
   if (!res.ok) throw await res.json()
