@@ -36,6 +36,13 @@
       "when": 1785921164768,
       "tag": "0004_optimal_baron_zemo",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1786274584914,
+      "tag": "0005_furry_stryfe",
+      "breakpoints": true
     }
   ]
 }

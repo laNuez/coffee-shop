@@ -20,5 +20,8 @@
       "pattern": "coffee.nuez.dev",
       "custom_domain": true
     }
-  ]
+  ],
+  "observability": {
+    "enabled": true
+  }
 }
