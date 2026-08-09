@@ -10,7 +10,7 @@ export const Product = (props: ProductProps) => {
   const { description, name, price, image } = props.product
 
   return (
-    <div className="card bg-base-200 w-full hover:shadow-sm">
+    <div className="card bg-base-200 [[data-theme=dark]_&]:bg-base-300 w-full hover:shadow-sm">
       <figure>
         <img src={getImageUrl(image)} alt={name} />
       </figure>

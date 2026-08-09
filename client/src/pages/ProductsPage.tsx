@@ -68,8 +68,7 @@ const productsQuery = (currentCategory: string | undefined) =>
 
 const categoriesQuery = queryOptions({
   queryKey: ['categories'],
-  queryFn: getCategories,
-  staleTime: Infinity
+  queryFn: getCategories
 })
 
 export const loader =

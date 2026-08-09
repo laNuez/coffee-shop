@@ -9,7 +9,7 @@ import { formatCents, getImageUrl } from '../util/util'
 
 import { checkout, delCartItem, getCart } from '../lib/api'
 import { X } from 'lucide-react'
-import { NavLink, redirect } from 'react-router'
+import { Link, redirect } from 'react-router'
 
 const cartQuery = queryOptions({
   queryKey: ['cart'],
@@ -136,9 +136,9 @@ const CartPage = () => {
           <div className="flex flex-col items-center justify-center py-12">
             <div className="text-center">
               <h3 className="mb-2 text-lg font-medium">Such empty</h3>
-              <NavLink to="/" className="link hover:text-primary">
+              <Link to="/products" className="link hover:text-primary">
                 Continue Shopping
-              </NavLink>
+              </Link>
             </div>
           </div>
         )}
@@ -161,11 +161,13 @@ const CartPage = () => {
         <button
           className="btn btn-primary w-full"
           onClick={() => checkoutMutation.mutate()}
-          disabled={checkoutMutation.isPending}
+          disabled={checkoutMutation.isPending || !cart.length}
         >
           {checkoutMutation.isPending || checkoutMutation.isSuccess
             ? 'Redirecting...'
-            : 'Proceed to Checkout'}
+            : cart.length
+              ? 'Proceed to Checkout'
+              : 'Add items to the cart'}
         </button>
       </div>
     </div>

@@ -87,7 +87,7 @@ export const Header = () => {
         {user && (
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost">
-              <span className="text-nowrap">Mi cuenta</span>
+              <span className="text-nowrap">My account</span>
             </div>
             <ul
               tabIndex={0}

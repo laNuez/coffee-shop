@@ -74,7 +74,7 @@ const LoginPage = () => {
             </div>
             <div className="card-actions flex-col items-center">
               <button className="btn btn-primary">Login</button>
-              <Link className="hover:link text-sm" to="/login">
+              <Link className="hover:link text-sm" to="/register">
                 Sign up instead
               </Link>
             </div>

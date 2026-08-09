@@ -122,7 +122,7 @@ export const ProductFormModal = (props: Props) => {
                   defaultValue={product?.price}
                 />
                 <div className="validator-hint mt-0 hidden">
-                  Must be at least ${formatCents(100)}
+                  Must be at least {formatCents(100)}
                 </div>
               </div>
               <div>

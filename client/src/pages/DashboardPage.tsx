@@ -38,6 +38,7 @@ const DashboardPage = () => {
     mutationFn: (id: string) => deleteProduct(id),
     onSuccess: () => {
       client.invalidateQueries({ queryKey: ['products'] })
+      client.invalidateQueries({ queryKey: ['categories'] })
     }
   })
 

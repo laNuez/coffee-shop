@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent } from 'react'
 import { useInput } from '../hooks/useInput'
 import { Link, useNavigate } from 'react-router'
 import { useMutation } from '@tanstack/react-query'
@@ -11,17 +11,10 @@ const RegisterPage = () => {
   const email = useInput('', 'email')
   const password = useInput('', 'password')
   const confirmPassword = useInput('', 'password')
-  const [validationError, setValidationError] = useState('')
+  const validationError =
+    password.value !== confirmPassword.value ? 'Password must match' : ''
 
   const navigate = useNavigate()
-
-  useEffect(() => {
-    if (password.value !== confirmPassword.value) {
-      return setValidationError('Password must match')
-    }
-
-    setValidationError('')
-  }, [password.value, confirmPassword.value, email.value, username.value])
 
   const registerMutation = useMutation<unknown, ApiError>({
     mutationFn: () => register(username.value, email.value, password.value),
