@@ -91,7 +91,7 @@ export const createOrder = async (data: insertOrder) => {
   return row
 }
 
-export const updateOrder = async (data: updateOrderType) => {
+export const updateOrderById = async (id: string, data: updateOrderType) => {
   const [row] = await db.update(ordersTable).set(data).returning()
 
   if (!row) {

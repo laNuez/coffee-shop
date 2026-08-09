@@ -18,7 +18,7 @@ const app = new Hono<Variables>()
   })
 
   .post('/login', async (c) => {
-    const body = await c.req.json().catch(() => {})
+    const body = await c.req.json()
 
     const { success, data, error } = loginSchema.safeParse(body)
     if (!success) return c.json({ error: z.treeifyError(error) }, 400)

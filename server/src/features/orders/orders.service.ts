@@ -1,13 +1,19 @@
-import { createOrder, createOrderItem } from '@server/db/mutations'
+import {
+  createOrder,
+  createOrderItem,
+  updateOrderById
+} from '@server/db/mutations'
 import { getCartByUserId, getOrder } from '@server/db/queries'
 import { ENV } from '@server/env'
 import stripeService from '@server/services/stripe'
-import type { Order } from '@server/types'
+import type { Order, UserFromToken } from '@server/types'
 import { HTTPException } from 'hono/http-exception'
 import type Stripe from 'stripe'
+import cartService from '../cart/cart.service'
+import z from 'zod'
 
-const createCheckout = async (userId: string) => {
-  const cart_items = await getCartByUserId(userId)
+const createCheckout = async (user: UserFromToken, origin: string) => {
+  const cart_items = await getCartByUserId(user.id)
   if (!cart_items.length)
     throw new HTTPException(404, { message: 'Cart not found' })
 
@@ -17,7 +23,7 @@ const createCheckout = async (userId: string) => {
   )
 
   const order = await createOrder({
-    userId,
+    userId: user.id,
     totalAmount
   })
 
@@ -33,14 +39,18 @@ const createCheckout = async (userId: string) => {
   const actualOrder = await getOrder(order.id)
   if (!actualOrder) throw new HTTPException(404, { message: 'Order not found' })
 
-  const stripeSession = await stripeService.createSession(
-    itemsPayload(actualOrder)
-  )
+  const stripeSession = await stripeService.createSession({
+    line_items: itemsPayload(actualOrder),
+    metadata: {
+      userId: user.id,
+      orderId: order.id
+    },
+    success_url: `${origin}/`,
+    cancel_url: `${origin}/cart`,
+    customer_email: user.email
+  })
   if (!stripeSession.url)
     throw new HTTPException(502, { message: 'Service unavailable' })
-
-  // TODO: probably best with a stripe webhook
-  // await deleteUserCart(userId)
 
   return stripeSession.url
 }
@@ -57,15 +67,55 @@ const itemsPayload = (
           description: e.product.description,
           images: [`${ENV.IMAGE_PREFIX}${e.product.image}`]
         },
-        unit_amount: e.product.price
+        // i just want mxn quickly
+        unit_amount: Math.round(e.product.price * 17.12)
       },
       quantity: e.quantity
     }
   })
 }
 
+const stripeMetadataSchema = z.object({
+  orderId: z.string(),
+  userId: z.string()
+})
+
+const handleWebhook = async (
+  body: string,
+  signature: string,
+  webhook_secret = ENV.STRIPE_WEBHOOK_SECRET
+) => {
+  const event = await stripeService.webhook(body, signature, webhook_secret)
+
+  switch (event.type) {
+    case 'payment_intent.created':
+      console.log('payment created')
+      break
+
+    case 'payment_intent.canceled':
+      console.log('payment canceled :(')
+      break
+
+    case 'payment_intent.succeeded':
+      const { success, data } = stripeMetadataSchema.safeParse(
+        event.data.object.metadata
+      )
+      if (!success) throw Error('Unexpected metadata')
+
+      await cartService.clear(data.userId)
+      await updateOrderById(data.orderId, { status: 'paid' })
+
+      break
+
+    default:
+      console.log(`Forgot to handle: ${event.type}`)
+      break
+  }
+}
+
 const ordersService = {
-  createCheckout
+  createCheckout,
+  handleWebhook
 }
 
 export default ordersService

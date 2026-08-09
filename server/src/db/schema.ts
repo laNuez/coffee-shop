@@ -59,9 +59,22 @@ export const ordersTable = sqliteTable('orders_table', {
     .notNull(),
   totalAmount: int().notNull(),
   status: text({
-    enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
-  }).default('pending'),
-  createdAt: text().default(sql`(current_timestamp)`)
+    enum: [
+      'pending',
+      'paid',
+      'preparing',
+      'shipped',
+      'delivered',
+      'cancelled',
+      'failed',
+      'refunded'
+    ]
+  })
+    .default('pending')
+    .notNull(),
+  createdAt: text()
+    .default(sql`(current_timestamp)`)
+    .notNull()
 })
 
 export const orderItemsTable = sqliteTable('order_items_table', {

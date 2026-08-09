@@ -9,7 +9,9 @@ const envSchema = z.object({
   BUCKET_SECRET: z.string().min(1),
   BUCKET_ENDPOINT: z.string().startsWith('https://'),
   STRIPE_SECRET: z.string().min(1),
-  IMAGE_PREFIX: z.string().startsWith('https://')
+  STRIPE_WEBHOOK_SECRET: z.string().min(1),
+  IMAGE_PREFIX: z.string().startsWith('https://'),
+  ALLOWED_ORIGINS: z.string().transform((e) => e.split(','))
 })
 
 export const ENV = envSchema.parse(process.env)
