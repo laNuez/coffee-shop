@@ -43,10 +43,6 @@ const ProductPage = () => {
     }
   })
 
-  // TODO: what about when a product is already on the cart?
-  // ill get a 409 conflict, i should change the backend
-  // im having trouble with the rpc, the endpoints that need a body dont get the types correctly.
-  // i can fix that using a validator, but why i didnt do that sooner? don't remember if i had a reason
   const handleAddToCart = () => {
     addToCartMutation.mutate({
       productId: id,
@@ -95,12 +91,8 @@ const ProductPage = () => {
               </button>
             </div>
             <div className="flex w-20 items-center gap-2">
-              <button className="btn btn-neutral btn-outline w-full">
-                Wishlist
-              </button>
-              <button className="btn btn-neutral btn-outline w-full">
-                Share
-              </button>
+              <button className="btn btn-outline w-full">Wishlist</button>
+              <button className="btn btn-outline w-full">Share</button>
             </div>
           </div>
         </div>

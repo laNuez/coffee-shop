@@ -61,16 +61,11 @@ export const ProductFormModal = (props: Props) => {
   return (
     <>
       <dialog className="modal" ref={dialogRef} onClose={() => onClose()}>
-        <div className="modal-box flex flex-col items-center">
+        <div className="modal-box flex w-96 flex-col items-center">
           <h3 className="text-lg font-bold">
             {isEdit ? 'Edit listing' : 'Add listing'}
           </h3>
-          <form
-            id="form"
-            onSubmit={handleSubmit}
-            className="w-96"
-            method="post"
-          >
+          <form id="form" onSubmit={handleSubmit} method="post">
             <fieldset className="fieldset p-2">
               <div>
                 <legend className="fieldset-legend">Name</legend>
