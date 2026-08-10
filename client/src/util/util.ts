@@ -51,3 +51,9 @@ export type InferSuccessResponseType<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   T extends (...args: any[]) => Promise<any>
 > = InferResponseType<T, SuccessStatusCode>
+
+export const formatDate = (date: string) => {
+  return Intl.DateTimeFormat('en-us', {
+    dateStyle: 'long'
+  }).format(new Date(date))
+}

@@ -4,10 +4,13 @@ import { getImageUrl } from '../util/util'
 
 interface ProductProps {
   product: ProductType
+  text?: string
 }
 
 export const Product = (props: ProductProps) => {
   const { description, name, price, image } = props.product
+
+  const btnText = props.text ? props.text : `Buy now: ${formatCents(price)}`
 
   return (
     <div className="card bg-base-200 [[data-theme=dark]_&]:bg-base-300 w-full hover:shadow-sm">
@@ -19,7 +22,7 @@ export const Product = (props: ProductProps) => {
         <p>{description}</p>
         <div className="card-actions">
           <button className="btn btn-primary">
-            Buy now: {formatCents(price)}
+            {btnText}
           </button>
         </div>
       </div>

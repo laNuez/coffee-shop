@@ -13,6 +13,7 @@ import { Product } from '../components/Product'
 import { Link, LoaderFunctionArgs, useSearchParams } from 'react-router'
 import { ProductsGrid } from '../components/ProductsGrid'
 import { PanelLeftIcon } from 'lucide-react'
+import { formatCents } from '../util/util'
 
 interface FilterMenuProps {
   categories: CategoriesResponse | undefined
@@ -52,7 +53,7 @@ const ProductsSide = ({ products }: ProductsGridProps) => {
       {products.map((p) => (
         <Link to={`/product/${p.id}`} key={p.id}>
           <div className="h-fit w-full sm:w-64">
-            <Product product={p} />
+            <Product product={p} text={formatCents(p.price)} />
           </div>
         </Link>
       ))}

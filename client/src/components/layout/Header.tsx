@@ -93,6 +93,11 @@ export const Header = () => {
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 z-1 w-52 p-2"
             >
+              {user && (
+                <li>
+                  <NavLink to="/orders">orders</NavLink>
+                </li>
+              )}
               <li>
                 <NavLink to="user/settings">settings</NavLink>
               </li>
