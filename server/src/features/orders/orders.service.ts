@@ -3,7 +3,7 @@ import {
   createOrderItem,
   updateOrderById
 } from '@server/db/mutations'
-import { getCartByUserId, getOrder } from '@server/db/queries'
+import { getCartByUserId, getOrder, getUserOrders } from '@server/db/queries'
 import { ENV } from '@server/env'
 import stripeService from '@server/services/stripe'
 import type { Order, UserFromToken } from '@server/types'
@@ -113,9 +113,14 @@ const handleWebhook = async (
   }
 }
 
+const getAll = async (userId: string) => {
+  return await getUserOrders(userId)
+}
+
 const ordersService = {
   createCheckout,
-  handleWebhook
+  handleWebhook,
+  getAll
 }
 
 export default ordersService

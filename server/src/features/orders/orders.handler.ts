@@ -28,5 +28,12 @@ const app = new Hono<Variables>()
 
     return c.text('', 200)
   })
+  .get('/', requireAuth, async (c) => {
+    const user = c.get('currentUser')!
+
+    const orders = await ordersService.getAll(user.id)
+
+    return c.json(orders, 200)
+  })
 
 export default app

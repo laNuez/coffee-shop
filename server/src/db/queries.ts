@@ -58,3 +58,16 @@ export const getOrder = async (id: string) => {
     }
   })
 }
+
+export const getUserOrders = async (userId: string) => {
+  return db.query.ordersTable.findMany({
+    where: eq(ordersTable.userId, userId),
+    with: {
+      items: {
+        with: {
+          product: true
+        }
+      }
+    }
+  })
+}
