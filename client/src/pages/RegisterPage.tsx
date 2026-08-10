@@ -32,7 +32,9 @@ const RegisterPage = () => {
           <div className="gap 3 card flex w-96 flex-col justify-between p-2 shadow-md">
             <div className="card-body">
               <div className="card-title">
-                <h2 className="text-2xl">Sign up to Coffee-shop</h2>
+                <h2 className="text-2xl">
+                  Sign up to {import.meta.env.VITE_APP_NAME}
+                </h2>
               </div>
               {registerMutation.error && (
                 <div
