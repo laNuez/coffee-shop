@@ -12,10 +12,10 @@ const DefaultLayout = () => {
     })
   }, [fetchUser])
   return (
-    <>
+    <div className="flex h-dvh flex-col">
       <Header />
-      <div>{<Outlet />}</div>
-    </>
+      <div className="flex-1">{<Outlet />}</div>
+    </div>
   )
 }
 

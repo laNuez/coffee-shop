@@ -100,7 +100,7 @@ const ProductsPage = () => {
   }
 
   return (
-    <div className="drawer lg:drawer-open">
+    <div className="drawer lg:drawer-open mt-1">
       <input type="checkbox" id="drawer" className="drawer-toggle" />
       <div className="drawer-side">
         <label

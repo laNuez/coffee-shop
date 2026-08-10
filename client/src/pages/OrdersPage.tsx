@@ -45,7 +45,7 @@ const Order = ({ order }: OrderProps) => {
               <img
                 src={getImageUrl(p.image)}
                 alt={p.name}
-                className="h-full w-full object-cover rounded-sm"
+                className="h-full w-full rounded-sm object-cover"
               />
             </div>
             <p className="text-lg">

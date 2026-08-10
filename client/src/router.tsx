@@ -15,50 +15,53 @@ import OrdersPage, { loader as ordersLoader } from './pages/OrdersPage'
 import { RequireAuth } from './components/RequireAuth'
 import { queryClient } from './lib/query'
 import { RequireAdmin } from './components/RequireAdmin'
+import { RouteError } from './components/RouteError'
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<DefaultLayout />}>
-      <Route
-        index
-        element={<HomePage />}
-        loader={homepageLoader(queryClient)}
-      />
-      <Route path="register" element={<SignUpPage />} />
-      <Route
-        path="cart"
-        element={
-          <RequireAuth>
-            <CartPage />
-          </RequireAuth>
-        }
-        loader={cartLoader(queryClient)}
-      />
-      <Route path="login" element={<LoginPage />} />
-      <Route
-        path="product/:id"
-        element={<ProductPage />}
-        loader={productLoader(queryClient)}
-      />
-      <Route
-        path="products"
-        element={<ProductsPage />}
-        loader={productsLoader(queryClient)}
-      />
-      <Route
-        path="orders"
-        element={<OrdersPage />}
-        loader={ordersLoader(queryClient)}
-      />
-      <Route
-        path="admin/dashboard"
-        element={
-          <RequireAdmin>
-            <DashboardPage />
-          </RequireAdmin>
-        }
-        loader={productsLoader(queryClient)}
-      />
+      <Route errorElement={<RouteError />}>
+        <Route
+          index
+          element={<HomePage />}
+          loader={homepageLoader(queryClient)}
+        />
+        <Route path="register" element={<SignUpPage />} />
+        <Route
+          path="cart"
+          element={
+            <RequireAuth>
+              <CartPage />
+            </RequireAuth>
+          }
+          loader={cartLoader(queryClient)}
+        />
+        <Route path="login" element={<LoginPage />} />
+        <Route
+          path="product/:id"
+          element={<ProductPage />}
+          loader={productLoader(queryClient)}
+        />
+        <Route
+          path="products"
+          element={<ProductsPage />}
+          loader={productsLoader(queryClient)}
+        />
+        <Route
+          path="orders"
+          element={<OrdersPage />}
+          loader={ordersLoader(queryClient)}
+        />
+        <Route
+          path="admin/dashboard"
+          element={
+            <RequireAdmin>
+              <DashboardPage />
+            </RequireAdmin>
+          }
+          loader={productsLoader(queryClient)}
+        />
+      </Route>
     </Route>
   )
 )

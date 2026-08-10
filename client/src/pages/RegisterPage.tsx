@@ -96,7 +96,7 @@ const RegisterPage = () => {
                   maxLength={100}
                 />
               </label>
-              <div>{validationError}</div>
+              <div className="text-error">{validationError}</div>
             </div>
             <div className="card-actions flex-col items-center">
               <button className="btn btn-primary">Create an account</button>
