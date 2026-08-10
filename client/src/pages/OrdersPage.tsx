@@ -20,15 +20,33 @@ interface OrderProps {
   order: OrderType
 }
 
+const orderStatus: Partial<Record<OrderType['status'], string>> = {
+  pending: 'badge-neutral',
+  paid: 'badge-success',
+  preparing: 'badge-warning',
+  shipped: 'badge-info',
+  delivered: 'badge-success'
+}
 const Order = ({ order }: OrderProps) => {
+  const getBadge = (status: OrderType['status']) => {
+    return orderStatus[status]
+  }
+
   return (
     <div className="collapse-arrow bg-base-300 collapse">
       <input type="checkbox" />
       <div className="collapse-title">
         <div className="flex items-center justify-between gap-6">
-          <div>
-            <p className="text-lg font-medium">Order placed | status</p>
-            <p>{formatDate(order.createdAt)}</p>
+          <div className="flex gap-3">
+            <div>
+              <p className="text-lg font-medium">Order placed</p>
+              <p>{formatDate(order.createdAt)}</p>
+            </div>
+            <div>
+              <span className={`badge badge-soft ${getBadge(order.status)}`}>
+                {order.status}
+              </span>
+            </div>
           </div>
           <p className="text-center text-base font-medium">
             {formatCents(order.totalAmount)}
@@ -62,7 +80,7 @@ const OrdersPage = () => {
   const { data: orders } = useSuspenseQuery(query)
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto max-w-3xl p-4">
       <h1 className="text-2xl font-bold">My orders</h1>
       <p className="mb-4 text-lg">Track and review your past purchases</p>
       {orders.map((order) => (

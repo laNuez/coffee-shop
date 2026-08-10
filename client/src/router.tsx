@@ -16,6 +16,7 @@ import { RequireAuth } from './components/RequireAuth'
 import { queryClient } from './lib/query'
 import { RequireAdmin } from './components/RequireAdmin'
 import { RouteError } from './components/RouteError'
+import NotFound from './pages/NotFoundPage'
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -61,6 +62,7 @@ export const router = createBrowserRouter(
           }
           loader={productsLoader(queryClient)}
         />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Route>
   )
