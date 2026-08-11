@@ -50,7 +50,11 @@ export const router = createBrowserRouter(
         />
         <Route
           path="orders"
-          element={<OrdersPage />}
+          element={
+            <RequireAuth>
+              <OrdersPage />
+            </RequireAuth>
+          }
           loader={ordersLoader(queryClient)}
         />
         <Route

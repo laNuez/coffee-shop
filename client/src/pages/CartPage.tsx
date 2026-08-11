@@ -9,7 +9,7 @@ import { formatCents, getImageUrl } from '../util/util'
 
 import { checkout, delCartItem, getCart } from '../lib/api'
 import { X } from 'lucide-react'
-import { Link, redirect } from 'react-router'
+import { Link } from 'react-router'
 
 const cartQuery = queryOptions({
   queryKey: ['cart'],
@@ -17,7 +17,7 @@ const cartQuery = queryOptions({
 })
 
 export const loader = (queryClient: QueryClient) => async () => {
-  queryClient.ensureQueryData(cartQuery).catch(() => redirect('/login'))
+  queryClient.ensureQueryData(cartQuery)
 }
 
 const CartPage = () => {

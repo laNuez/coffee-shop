@@ -9,11 +9,11 @@ import { formatCents, formatDate, getImageUrl } from '../util/util'
 
 const query = queryOptions({
   queryKey: ['orders'],
-  queryFn: () => getOrders()
+  queryFn: getOrders
 })
 
 export const loader = (queryClient: QueryClient) => async () => {
-  return queryClient.ensureQueryData(query)
+  queryClient.ensureQueryData(query)
 }
 
 interface OrderProps {
