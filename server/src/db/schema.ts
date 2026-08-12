@@ -143,8 +143,12 @@ export const productUpdateSchemaDB = productInsertSchema
   })
   .partial()
 
-export const cartItemInsertSchema = createInsertSchema(cartItemsTable).omit({
+const cartItemInsertSchema = createInsertSchema(cartItemsTable).omit({
   id: true
+})
+
+export const addToCartRequestSchema = cartItemInsertSchema.omit({
+  userId: true
 })
 
 export const cartItemPatchSchema = createUpdateSchema(cartItemsTable, {
@@ -166,7 +170,7 @@ const orderItemUpdateSchema = createUpdateSchema(orderItemsTable)
 
 export type updateCartItem = z.infer<typeof cartItemPatchSchema>
 
-export type insertCartItem = z.infer<typeof cartItemInsertSchema>
+export type InsertCartParams = z.infer<typeof cartItemInsertSchema>
 
 export type insertProduct = z.infer<typeof productInsertSchemaDB>
 

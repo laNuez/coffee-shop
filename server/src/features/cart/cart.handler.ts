@@ -1,7 +1,7 @@
+import { zValidator } from '@hono/zod-validator'
 import { addToCart, deleteFromCart, updateCartItem } from '@server/db/mutations'
 import { getCartByUserId, getCartItemById } from '@server/db/queries'
-import { cartItemInsertSchema, cartItemPatchSchema } from '@server/db/schema'
-import { isUniqueConstraintError } from '@server/db/utils'
+import { addToCartRequestSchema, cartItemPatchSchema } from '@server/db/schema'
 import { requireAuth } from '@server/middleware/userContext'
 import type { Variables } from '@server/types'
 import { Hono } from 'hono'
@@ -17,34 +17,21 @@ const app = new Hono<Variables>()
     return c.json(cart)
   })
 
-  .post('/', requireAuth, async (c) => {
-    const user = c.get('currentUser')
-    if (!user) {
-      return c.json({ error: 'log in' }, 403)
-    }
+  .post(
+    '/',
+    requireAuth,
+    zValidator('json', addToCartRequestSchema),
+    async (c) => {
+      const user = c.get('currentUser')!
+      const body = c.req.valid('json')
 
-    const body = await c.req.json().catch(() => null)
-
-    const { success, data, error } = cartItemInsertSchema.safeParse({
-      ...body,
-      userId: user.id
-    })
-
-    if (!success) {
-      return c.json({ error: 'Unprocessable Content' }, 422)
-    }
-
-    try {
-      const row = await addToCart(data)
+      const row = await addToCart({
+        ...body,
+        userId: user.id
+      })
       return c.json(row, 201)
-    } catch (error) {
-      if (isUniqueConstraintError(error)) {
-        return c.json({ error: 'conflict' }, 409)
-      }
-
-      return c.json({ error: 'something went wrong' }, 500)
     }
-  })
+  )
 
   .patch('/:id', requireAuth, async (c) => {
     const user = c.get('currentUser')

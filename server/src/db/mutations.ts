@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq, sql } from 'drizzle-orm'
 import { db } from './client'
 import {
   cartItemsTable,
@@ -6,7 +6,7 @@ import {
   ordersTable,
   productsTable,
   usersTable,
-  type insertCartItem,
+  type InsertCartParams,
   type insertOrder,
   type insertOrderItem,
   type insertProduct,
@@ -48,8 +48,18 @@ export const updateProduct = async (id: string, data: patchProductDB) => {
   return row
 }
 
-export const addToCart = async (data: insertCartItem) => {
-  const [row] = await db.insert(cartItemsTable).values(data).returning()
+export const addToCart = async (data: InsertCartParams) => {
+  const [row] = await db
+    .insert(cartItemsTable)
+    .values(data)
+    .onConflictDoUpdate({
+      target: [cartItemsTable.userId, cartItemsTable.productId],
+      set: {
+        quantity: sql`${cartItemsTable.quantity} + ${data.quantity}`
+      }
+    })
+    .returning()
+
   if (!row) {
     throw new Error('Failed to add item or retrieve item')
   }
