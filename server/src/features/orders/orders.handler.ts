@@ -3,7 +3,10 @@ import { Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 import ordersService from './orders.service'
 import { ENV } from '@server/env'
-import { requireAuth } from '@server/middleware/userContext'
+import { requireAdmin, requireAuth } from '@server/middleware/userContext'
+import { zValidator } from '@hono/zod-validator'
+import { orderUpdateRequestSchema } from '@server/db/schema'
+import { updateOrderById } from '@server/db/mutations'
 
 const app = new Hono<Variables>()
   .post('/checkout', requireAuth, async (c) => {
@@ -31,8 +34,26 @@ const app = new Hono<Variables>()
   .get('/', requireAuth, async (c) => {
     const user = c.get('currentUser')!
 
-    const orders = await ordersService.getAll(user.id)
+    const orders = await ordersService.getAllUser(user.id)
 
+    return c.json(orders, 200)
+  })
+  .patch(
+    '/:id',
+    requireAdmin,
+    zValidator('json', orderUpdateRequestSchema),
+    async (c) => {
+      const { id } = c.req.query()
+      const data = c.req.valid('json')
+
+      if (!id) throw new HTTPException(404, { message: 'Not found' })
+
+      const order = await updateOrderById(id, data)
+      return c.json(order, 200)
+    }
+  )
+  .get('/admin', requireAdmin, async (c) => {
+    const orders = await ordersService.getAll()
     return c.json(orders, 200)
   })
 

@@ -134,3 +134,9 @@ export const getOrders = async () => {
   if (!res.ok) throw await res.json()
   return await res.json()
 }
+
+export const getOrdersAdmin = async () => {
+  const res = await client.api.orders.admin.$get()
+  if (!res.ok) throw await res.json()
+  return await res.json()
+}

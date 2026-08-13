@@ -165,6 +165,10 @@ const orderInsertSchema = createInsertSchema(ordersTable)
 
 const orderUpdateSchema = createUpdateSchema(ordersTable)
 
+export const orderUpdateRequestSchema = orderUpdateSchema.pick({
+  status: true
+})
+
 const orderItemInsertSchema = createInsertSchema(orderItemsTable)
 const orderItemUpdateSchema = createUpdateSchema(orderItemsTable)
 

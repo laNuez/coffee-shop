@@ -71,3 +71,7 @@ export const getUserOrders = async (userId: string) => {
     }
   })
 }
+
+export const getAllOrders = async () => {
+  return db.query.ordersTable.findMany()
+}
