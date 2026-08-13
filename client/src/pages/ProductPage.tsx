@@ -64,7 +64,6 @@ const ProductPage = () => {
     <div>
       <button popoverTarget="login-continue" className="hidden" />
       <Modal
-        message="Please login to continue"
         id="login-continue"
         ref={modalRef}
         actions={
