@@ -99,7 +99,12 @@ const RegisterPage = () => {
               <div className="text-error">{validationError}</div>
             </div>
             <div className="card-actions flex-col items-center">
-              <button className="btn btn-primary">Create an account</button>
+              <button
+                className="btn btn-primary"
+                disabled={registerMutation.isPending}
+              >
+                Create an account
+              </button>
               <Link className="hover:link text-sm" to="/login">
                 Already have an account?
               </Link>

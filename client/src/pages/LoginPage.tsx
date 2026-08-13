@@ -73,7 +73,12 @@ const LoginPage = () => {
               </label>
             </div>
             <div className="card-actions flex-col items-center">
-              <button className="btn btn-primary">Login</button>
+              <button
+                className="btn btn-primary"
+                disabled={loginMutation.isPending}
+              >
+                Login
+              </button>
               <Link className="hover:link text-sm" to="/register">
                 Sign up instead
               </Link>

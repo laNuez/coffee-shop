@@ -5,11 +5,13 @@ import {
   useQueryClient,
   useSuspenseQuery
 } from '@tanstack/react-query'
-import { LoaderFunctionArgs, useParams } from 'react-router'
+import { Link, LoaderFunctionArgs, useParams } from 'react-router'
 import { addToCart, AddToCartInput, getProduct } from '../lib/api'
 import { formatCents, getImageUrl } from '../util/util'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Plus, Minus, Check } from 'lucide-react'
+import { Modal } from '../components/Modal'
+import { useUserStore } from '../stores/userStore'
 type ProductParams = {
   id: string
 }
@@ -32,6 +34,8 @@ const ProductPage = () => {
   const { id } = useParams() as ProductParams
   const [quantity, setQuantity] = useState(1)
 
+  const user = useUserStore((state) => state.user)
+
   const { data: product } = useSuspenseQuery(productQuery(id))
 
   const queryClient = useQueryClient()
@@ -43,7 +47,13 @@ const ProductPage = () => {
     }
   })
 
+  const modalRef = useRef<HTMLDialogElement>(null)
+
   const handleAddToCart = () => {
+    if (!user) {
+      modalRef.current?.showModal()
+    }
+
     addToCartMutation.mutate({
       productId: id,
       quantity: quantity
@@ -52,6 +62,26 @@ const ProductPage = () => {
 
   return (
     <div>
+      <button popoverTarget="login-continue" className="hidden" />
+      <Modal
+        message="Please login to continue"
+        id="login-continue"
+        ref={modalRef}
+        actions={
+          <div className="flex gap-3">
+            <Link
+              to="/login"
+              state={{ path: location.pathname }}
+              className="btn btn-secondary"
+            >
+              Log in
+            </Link>
+            <button className="btn btn-primary btn-outline">Close</button>
+          </div>
+        }
+      >
+        <p className="p-4 font-medium">Please login to continue</p>
+      </Modal>
       <div className="grid items-center md:grid-cols-2">
         <div className="p-4">
           <figure>
