@@ -140,3 +140,16 @@ export const getOrdersAdmin = async () => {
   if (!res.ok) throw await res.json()
   return await res.json()
 }
+
+const $updateOrder = client.api.orders[':id'].$patch
+export type OrderRequest = InferRequestType<typeof $updateOrder>['json']
+export const updateOrder = async (id: string, data: OrderRequest) => {
+  const res = await $updateOrder({
+    param: {
+      id
+    },
+    json: data
+  })
+  if (!res.ok) throw await res.json()
+  return await res.json()
+}

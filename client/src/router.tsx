@@ -1,6 +1,7 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
   Route
 } from 'react-router'
 import DefaultLayout from './components/layout/DefaultLayout'
@@ -17,6 +18,10 @@ import { queryClient } from './lib/query'
 import { RequireAdmin } from './components/RequireAdmin'
 import { RouteError } from './components/RouteError'
 import NotFound from './pages/NotFoundPage'
+import DashboardProductsPage from './pages/dashboard/DashboardProductsPage'
+import DashboardOrdersPage, {
+  loader as ordersAdminLoader
+} from './pages/dashboard/DashboardOrdersPage'
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -64,8 +69,19 @@ export const router = createBrowserRouter(
               <DashboardPage />
             </RequireAdmin>
           }
-          loader={productsLoader(queryClient)}
-        />
+        >
+          <Route index element={<Navigate to="products" />} />
+          <Route
+            path="products"
+            element={<DashboardProductsPage />}
+            loader={productsLoader(queryClient)}
+          />
+          <Route
+            path="orders"
+            element={<DashboardOrdersPage />}
+            loader={ordersAdminLoader(queryClient)}
+          />
+        </Route>
         <Route path="*" element={<NotFound />} />
       </Route>
     </Route>
