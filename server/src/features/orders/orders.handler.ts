@@ -43,7 +43,7 @@ const app = new Hono<Variables>()
     requireAdmin,
     zValidator('json', orderUpdateRequestSchema),
     async (c) => {
-      const { id } = c.req.query()
+      const { id } = c.req.param()
       const data = c.req.valid('json')
 
       if (!id) throw new HTTPException(404, { message: 'Not found' })

@@ -102,7 +102,11 @@ export const createOrder = async (data: insertOrder) => {
 }
 
 export const updateOrderById = async (id: string, data: updateOrderType) => {
-  const [row] = await db.update(ordersTable).set(data).returning()
+  const [row] = await db
+    .update(ordersTable)
+    .set(data)
+    .where(eq(ordersTable.id, id))
+    .returning()
 
   if (!row) {
     throw new Error('Failed to update order')
