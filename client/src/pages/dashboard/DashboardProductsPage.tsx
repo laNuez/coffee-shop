@@ -102,7 +102,7 @@ const DashboardProductsPage = () => {
     setIsOpen(false)
   }
   return (
-    <div className="m-8">
+    <div className="w-full p-2 pt-6">
       <ProductFormModal
         product={product}
         key={product ? product.id : `new-${formKey}`}
@@ -111,7 +111,7 @@ const DashboardProductsPage = () => {
         isOpen={isOpen}
         onClose={onClose}
       />
-      <h2 className="text-xl">Product List</h2>
+      <h2 className="mb-2 text-xl font-medium">Product List</h2>
       <div>
         <button
           type="button"

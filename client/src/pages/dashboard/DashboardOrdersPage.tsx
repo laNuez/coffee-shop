@@ -6,10 +6,12 @@ import {
   useSuspenseQuery
 } from '@tanstack/react-query'
 import { Table } from '../../components/Table'
-import { OrderRequest, updateOrder } from '../../lib/api'
-import { formatCents } from '../../util/util'
+import { Order, OrderRequest, updateOrder } from '../../lib/api'
+import { formatCents, formatDate } from '../../util/util'
 import { Pencil, Plus } from 'lucide-react'
 import { getOrdersAdmin } from '../../lib/api'
+import { OrderStatusModal } from '../../components/OrderStatusModal'
+import { useState } from 'react'
 
 const ordersQuery = () =>
   queryOptions({
@@ -30,26 +32,40 @@ const DashboardOrdersPage = () => {
 
   const client = useQueryClient()
 
+  const [order, setOrder] = useState<Omit<Order, 'items'> | null>()
+
   const orderEditMutation = useMutation({
     mutationKey: ['orders', 'admin'],
     mutationFn: ({ id, data }: OrderEdit) => updateOrder(id, data),
     onSuccess: () => {
       client.invalidateQueries({ queryKey: ['orders'] })
+      setOrder(null)
     }
   })
 
   const handleEdit = (id: string) => {
+    const o = orders.find((e) => e.id == id)
+    if (!o) throw new Error('product missing')
+    setOrder(o)
+  }
+
+  const edit = (id: string, data: OrderRequest) => {
     orderEditMutation.mutate({
-      data: {
-        status: 'shipped'
-      },
+      data,
       id
     })
   }
 
   return (
-    <div className="m-8">
-      <h2 className="text-xl">Order List</h2>
+    <div className="w-full p-2 pt-6">
+      {order && (
+        <OrderStatusModal
+          order={order}
+          handleEdit={edit}
+          onClose={() => setOrder(null)}
+        />
+      )}
+      <h2 className="mb-2 text-xl font-medium">Order List</h2>
       <div>
         <button type="button" className="btn btn-accent" disabled>
           <Plus />
@@ -65,8 +81,19 @@ const DashboardOrdersPage = () => {
               accessor: (row) => <input type="checkbox" id={row.id} />
             },
             {
-              header: 'User',
-              accessor: (row) => row.userId
+              header: 'Order ID',
+              accessor: (row) => (
+                <span
+                  className="inline-block max-w-24 cursor-pointer truncate align-bottom select-all"
+                  title={row.id}
+                >
+                  {row.id}
+                </span>
+              )
+            },
+            {
+              header: 'Customer',
+              accessor: (row) => row.customer.username
             },
             {
               header: 'Status',
@@ -75,6 +102,10 @@ const DashboardOrdersPage = () => {
             {
               header: 'Price',
               accessor: (row) => formatCents(row.totalAmount)
+            },
+            {
+              header: 'Created',
+              accessor: (row) => formatDate(row.createdAt)
             },
             {
               header: 'Actions',
