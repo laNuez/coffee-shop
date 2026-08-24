@@ -73,5 +73,9 @@ export const getUserOrders = async (userId: string) => {
 }
 
 export const getAllOrders = async () => {
-  return db.query.ordersTable.findMany()
+  return db.query.ordersTable.findMany({
+    with: {
+      customer: true
+    }
+  })
 }

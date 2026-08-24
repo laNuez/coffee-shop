@@ -220,6 +220,10 @@ export const orderItemRelations = relations(orderItemsTable, ({ one }) => ({
   })
 }))
 
-export const orderRelations = relations(ordersTable, ({ many }) => ({
-  items: many(orderItemsTable)
+export const orderRelations = relations(ordersTable, ({ many, one }) => ({
+  items: many(orderItemsTable),
+  customer: one(usersTable, {
+    fields: [ordersTable.userId],
+    references: [usersTable.id]
+  })
 }))
