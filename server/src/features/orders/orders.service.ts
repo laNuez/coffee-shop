@@ -57,6 +57,7 @@ const createCheckout = async (user: UserFromToken, origin: string) => {
   if (!stripeSession.url)
     throw new HTTPException(502, { message: 'Service unavailable' })
 
+  await cartService.clear(user.id)
   return stripeSession.url
 }
 
@@ -66,14 +67,13 @@ const itemsPayload = (
   return order.items.map((e) => {
     return {
       price_data: {
-        currency: 'mxn',
+        currency: 'usd',
         product_data: {
           name: e.product.name,
           description: e.product.description,
           images: [`${ENV.IMAGE_PREFIX}${e.product.image}`]
         },
-        // i just want mxn quickly
-        unit_amount: Math.round(e.product.price * 17.12)
+        unit_amount: e.product.price
       },
       quantity: e.quantity
     }
@@ -107,7 +107,6 @@ const handleWebhook = async (
       )
       if (!success) throw Error('Unexpected metadata')
 
-      await cartService.clear(data.userId)
       await updateOrderById(data.orderId, { status: 'paid' })
 
       break
@@ -126,7 +125,40 @@ const getAll = async () => {
   return await getAllOrders()
 }
 
+// TODO: Order prices expiration
+const continueCheckout = async (
+  orderId: string,
+  origin: string,
+  user: UserFromToken
+) => {
+  const order = await getOrder(orderId)
+  if (!order) throw new HTTPException(404, { message: 'Order not found' })
+
+  if (order.userId !== user.id)
+    throw new HTTPException(403, { message: 'Forbidden' })
+
+  if (order.status !== 'pending')
+    throw new HTTPException(409, { message: 'Order cannot be paid' })
+
+  const stripeSession = await stripeService.createSession({
+    line_items: itemsPayload(order),
+    metadata: {
+      userId: order.userId,
+      orderId: order.id
+    },
+    success_url: `${origin}/orders`,
+    cancel_url: `${origin}/orders`,
+    customer_email: user.email
+  })
+
+  if (!stripeSession.url)
+    throw new HTTPException(502, { message: 'Service unavailable' })
+
+  return stripeSession.url
+}
+
 const ordersService = {
+  continueCheckout,
   createCheckout,
   handleWebhook,
   getAllUser,

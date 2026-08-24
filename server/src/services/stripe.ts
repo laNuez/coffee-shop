@@ -26,8 +26,7 @@ const createSession = async ({
     mode: 'payment',
     success_url: success_url,
     cancel_url: cancel_url,
-    // oxxo mentioned lets go
-    payment_method_types: ['card', 'oxxo'],
+    payment_method_types: ['card'],
     payment_intent_data: {
       metadata: metadata
     },

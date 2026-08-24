@@ -21,6 +21,22 @@ const app = new Hono<Variables>()
 
     return c.json({ url: stripeSession }, 200)
   })
+  .post('/:id/checkout', requireAuth, async (c) => {
+    const user = c.get('currentUser')!
+    const { id } = c.req.param()
+
+    const origin = c.req.header('Origin')
+    const allowed = ENV.ALLOWED_ORIGINS.find((e) => e === origin)
+    if (!allowed) throw new HTTPException(400, { message: 'Bad request' })
+
+    const stripeSession = await ordersService.continueCheckout(
+      id,
+      origin!,
+      user
+    )
+
+    return c.json({ url: stripeSession }, 200)
+  })
   .post('/webhook', async (c) => {
     const signature = c.req.header('stripe-signature')
     if (!signature) throw new HTTPException(400, { message: 'Bad request' })
