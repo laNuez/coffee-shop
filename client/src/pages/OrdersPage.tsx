@@ -1,9 +1,10 @@
 import {
   QueryClient,
   queryOptions,
+  useMutation,
   useSuspenseQuery
 } from '@tanstack/react-query'
-import { getOrders, Order as OrderType } from '../lib/api'
+import { continueCheckout, getOrders, Order as OrderType } from '../lib/api'
 
 import { formatCents, formatDate, getImageUrl } from '../util/util'
 
@@ -18,20 +19,27 @@ export const loader = (queryClient: QueryClient) => async () => {
 
 interface OrderProps {
   order: OrderType
+  onContinuePayment: (id: string) => void
+  isContinuingPayment: boolean
 }
 
 const orderStatus: Partial<Record<OrderType['status'], string>> = {
-  pending: 'badge-neutral',
+  pending: 'badge-secondary',
   paid: 'badge-success',
   preparing: 'badge-warning',
   shipped: 'badge-info',
   delivered: 'badge-success'
 }
-const Order = ({ order }: OrderProps) => {
-  const getBadge = (status: OrderType['status']) => {
-    return orderStatus[status]
-  }
 
+const getBadge = (status: OrderType['status']) => {
+  return orderStatus[status]
+}
+
+const Order = ({
+  order,
+  onContinuePayment,
+  isContinuingPayment
+}: OrderProps) => {
   return (
     <div className="collapse-arrow bg-base-300 collapse">
       <input type="checkbox" />
@@ -72,6 +80,19 @@ const Order = ({ order }: OrderProps) => {
           </div>
         ))}
       </div>
+      {order.status === 'pending' && (
+        <div className="p-4">
+          <button
+            onClick={() => {
+              onContinuePayment(order.id)
+            }}
+            className="link"
+            disabled={isContinuingPayment}
+          >
+            {isContinuingPayment ? 'Redirecting...' : 'Continue payment'}
+          </button>
+        </div>
+      )}
     </div>
   )
 }
@@ -79,13 +100,23 @@ const Order = ({ order }: OrderProps) => {
 const OrdersPage = () => {
   const { data: orders } = useSuspenseQuery(query)
 
+  const continueCheckoutMutation = useMutation({
+    mutationFn: continueCheckout,
+    onSuccess: (checkoutSession) => (window.location.href = checkoutSession.url)
+  })
+
   return (
     <div className="container mx-auto max-w-3xl p-4">
       <h1 className="text-2xl font-bold">My orders</h1>
       <p className="mb-4 text-lg">Track and review your past purchases</p>
       {orders.map((order) => (
         <div className="mb-4">
-          <Order order={order} key={order.id} />
+          <Order
+            order={order}
+            key={order.id}
+            onContinuePayment={(id) => continueCheckoutMutation.mutate(id)}
+            isContinuingPayment={continueCheckoutMutation.isPending}
+          />
         </div>
       ))}
     </div>

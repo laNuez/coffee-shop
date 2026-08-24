@@ -126,6 +126,16 @@ export const checkout = async () => {
   return await res.json()
 }
 
+export const continueCheckout = async (id: string) => {
+  const res = await client.api.orders[':id'].checkout.$post({
+    param: {
+      id
+    }
+  })
+  if (!res.ok) throw await res.json()
+  return await res.json()
+}
+
 const $getOrders = client.api.orders.$get
 export type Orders = InferSuccessResponseType<typeof $getOrders>
 export type Order = Orders[number]
