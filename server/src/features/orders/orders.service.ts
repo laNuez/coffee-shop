@@ -71,7 +71,7 @@ const itemsPayload = (
         product_data: {
           name: e.product.name,
           description: e.product.description,
-          images: [`${ENV.IMAGE_PREFIX}${e.product.image}`]
+          images: [`${ENV.IMAGE_PREFIX}/${e.product.image}`]
         },
         unit_amount: e.product.price
       },

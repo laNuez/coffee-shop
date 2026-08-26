@@ -22,7 +22,7 @@ export type ApiError = {
 
 export const getImageUrl = (key: string) => {
   return key
-    ? `${import.meta.env.VITE_IMAGE_PREFIX_URL}${key}`
+    ? `${import.meta.env.VITE_IMAGE_PREFIX_URL}/${key}`
     : 'https://placehold.co/600x400'
 }
 
