@@ -1,8 +1,11 @@
 import { PanelLeftIcon } from 'lucide-react'
 import { Drawer } from '../components/Drawer'
 import { Link, Outlet } from 'react-router'
+import { useUserStore } from '../stores/userStore'
 
 const DashboardPage = () => {
+  const user = useUserStore((state) => state.user)
+  const isDemoAdmin = user?.role === 'admin_demo'
   return (
     <Drawer
       id="dashboard-drawer"
@@ -25,9 +28,12 @@ const DashboardPage = () => {
           <PanelLeftIcon />
         </label>
       </div>
-      {/* <div className="m-8 mt-2"> */}
+      {isDemoAdmin && (
+        <div className="alert alert-warning mt-2 font-semibold">
+          Read-only admin account
+        </div>
+      )}
       <Outlet />
-      {/* </div> */}
     </Drawer>
   )
 }

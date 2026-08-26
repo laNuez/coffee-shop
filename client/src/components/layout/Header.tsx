@@ -46,7 +46,7 @@ export const Header = () => {
             <li>
               <NavLink to="/products">Products</NavLink>
             </li>
-            {user?.role === 'admin' && (
+            {(user?.role === 'admin' || user?.role === 'admin_demo') && (
               <li>
                 <NavLink to="admin/dashboard">Dashboard</NavLink>
               </li>
@@ -60,7 +60,7 @@ export const Header = () => {
           <NavLink className="btn btn-ghost" to="/products">
             Products
           </NavLink>
-          {user?.role === 'admin' && (
+          {(user?.role === 'admin' || user?.role === 'admin_demo') && (
             <NavLink className="btn btn-ghost" to="admin/dashboard">
               Dashboard
             </NavLink>

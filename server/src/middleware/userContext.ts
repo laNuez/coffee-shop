@@ -40,7 +40,10 @@ export const requireAdmin = createMiddleware<Variables>(async (c, next) => {
   const user = c.get('currentUser')
   if (!user) throw new HTTPException(401, { message: 'Unauthorized' })
 
-  if (user.role !== 'admin')
+  if (user.role === 'admin_demo' && c.req.method !== 'GET')
+    throw new HTTPException(403, { message: 'Forbidden' })
+
+  if (user.role !== 'admin' && user.role !== 'admin_demo')
     throw new HTTPException(403, { message: 'Forbidden' })
 
   await next()

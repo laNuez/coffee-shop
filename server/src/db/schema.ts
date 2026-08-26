@@ -25,7 +25,7 @@ export const usersTable = sqliteTable('users_table', {
   email: text().unique().notNull(),
   password: text().notNull(),
   role: text({
-    enum: ['admin', 'user']
+    enum: ['admin', 'user', 'admin_demo']
   })
     .default('user')
     .notNull()

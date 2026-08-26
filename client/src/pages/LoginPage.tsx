@@ -6,6 +6,7 @@ import { login } from '../lib/api'
 import { useMutation } from '@tanstack/react-query'
 import { ApiError } from '../util/util'
 import { XIcon } from 'lucide-react'
+import { ADMIN_DEMO_PASSWORD, ADMIN_DEMO_USERNAME } from '../util/constants'
 
 const LoginPage = () => {
   const username = useInput('')
@@ -14,8 +15,12 @@ const LoginPage = () => {
   const navigate = useNavigate()
   const { state } = useLocation()
 
-  const loginMutation = useMutation<unknown, ApiError>({
-    mutationFn: () => login(username.value, password.value),
+  const loginMutation = useMutation<
+    unknown,
+    ApiError,
+    { username: string; password: string }
+  >({
+    mutationFn: (variables) => login(variables.username, variables.password),
     onSuccess: () => {
       fetchUser().then(() => {
         navigate(state?.path || '/')
@@ -26,7 +31,17 @@ const LoginPage = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!username || !password) return
-    loginMutation.mutate()
+    loginMutation.mutate({
+      username: username.value,
+      password: password.value
+    })
+  }
+
+  const loginDemoAdmin = () => {
+    loginMutation.mutate({
+      username: ADMIN_DEMO_USERNAME,
+      password: ADMIN_DEMO_PASSWORD
+    })
   }
 
   return (
@@ -83,6 +98,22 @@ const LoginPage = () => {
                 Sign up instead
               </Link>
             </div>
+          </div>
+          <div className="mt-2 flex justify-between">
+            <button
+              className="btn btn-secondary btn-ghost btn-sm hidden"
+              disabled={loginMutation.isPending}
+            >
+              Try customer demo
+            </button>{' '}
+            <button
+              className="btn btn-secondary btn-ghost btn-sm"
+              disabled={loginMutation.isPending}
+              onClick={loginDemoAdmin}
+              type="button"
+            >
+              Try admin demo
+            </button>
           </div>
         </form>
       </div>
