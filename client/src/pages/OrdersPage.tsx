@@ -7,6 +7,7 @@ import {
 import { continueCheckout, getOrders, Order as OrderType } from '../lib/api'
 
 import { formatCents, formatDate, getImageUrl } from '../util/util'
+import { Link } from 'react-router'
 
 const query = queryOptions({
   queryKey: ['orders'],
@@ -110,15 +111,22 @@ const OrdersPage = () => {
       <h1 className="text-2xl font-bold">My orders</h1>
       <p className="mb-4 text-lg">Track and review your past purchases</p>
       {orders.map((order) => (
-        <div className="mb-4">
+        <div className="mb-4" key={order.id}>
           <Order
             order={order}
-            key={order.id}
             onContinuePayment={(id) => continueCheckoutMutation.mutate(id)}
             isContinuingPayment={continueCheckoutMutation.isPending}
           />
         </div>
       ))}
+      {orders.length === 0 && (
+        <>
+          <p className="mb-2">You haven't placed any orders yet.</p>
+          <Link to="/products" className="btn btn-primary">
+            Browse coffee
+          </Link>
+        </>
+      )}
     </div>
   )
 }

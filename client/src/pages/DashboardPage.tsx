@@ -23,13 +23,18 @@ const DashboardPage = () => {
         </aside>
       }
     >
-      <div className="bg-base-200 flex h-14 min-w-full items-center p-2 lg:hidden">
+      <div className="bg-base-200 flex h-14 min-w-full items-center gap-4 p-2 lg:hidden">
         <label htmlFor="dashboard-drawer" className="btn drawer-button">
           <PanelLeftIcon />
         </label>
+        {isDemoAdmin && (
+          <div className="alert alert-warning mx-auto font-semibold">
+            Read-only admin account
+          </div>
+        )}
       </div>
       {isDemoAdmin && (
-        <div className="alert alert-warning mt-2 font-semibold">
+        <div className="alert alert-warning mt-2 hidden font-semibold lg:block">
           Read-only admin account
         </div>
       )}

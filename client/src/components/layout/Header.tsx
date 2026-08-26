@@ -95,14 +95,20 @@ export const Header = () => {
             >
               {user && (
                 <li>
-                  <NavLink to="/orders">orders</NavLink>
+                  <NavLink to="/orders" className="btn btn-ghost">
+                    orders
+                  </NavLink>
                 </li>
               )}
               <li>
-                <NavLink to="user/settings">settings</NavLink>
+                <NavLink to="user/settings" className="btn btn-ghost">
+                  settings 404
+                </NavLink>
               </li>
               <li>
-                <button onClick={handleLogout}>logout</button>
+                <button onClick={handleLogout} className="btn btn-ghost">
+                  logout
+                </button>
               </li>
             </ul>
           </div>

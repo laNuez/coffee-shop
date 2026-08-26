@@ -11,7 +11,7 @@ export const Drawer = (props: DrawerProps) => {
   return (
     <div className="drawer lg:drawer-open mt-1">
       <input id={id} type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col items-center justify-center">
+      <div className="drawer-content flex flex-col items-center">
         {children}
       </div>
       <div className="drawer-side">
