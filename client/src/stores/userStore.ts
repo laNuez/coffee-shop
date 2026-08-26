@@ -47,7 +47,7 @@ export const useLogout = () => {
   const clearUser = useUserStore((state) => state.clearUser)
 
   const fn = async () => {
-    await client.api.logout.$get()
+    await client.api.logout.$post()
     clearUser()
   }
   return useCallback(fn, [clearUser])

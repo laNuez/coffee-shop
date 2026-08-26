@@ -47,6 +47,9 @@ export const ProductFormModal = (props: Props) => {
           if (k === 'image') {
             if (!formValues.image.name) return
           }
+          if (k === 'price') {
+            if (+formValues[k] === product[k]) return
+          }
           p[k] = formValues[k] as never
         }
       })

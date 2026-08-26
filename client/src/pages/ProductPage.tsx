@@ -52,6 +52,7 @@ const ProductPage = () => {
   const handleAddToCart = () => {
     if (!user) {
       modalRef.current?.showModal()
+      return
     }
 
     addToCartMutation.mutate({
@@ -97,16 +98,14 @@ const ProductPage = () => {
             <div className="flex items-center gap-2">
               <button
                 className="btn"
-                onClick={() =>
-                  setQuantity((prev) => (prev - 1 > 1 ? prev - 1 : 1))
-                }
+                onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
               >
                 <Minus />
               </button>
               <span className="w-8 text-center">{quantity}</span>
               <button
                 className="btn"
-                onClick={() => setQuantity((prev) => prev + 1)}
+                onClick={() => setQuantity((prev) => Math.min(100, prev + 1))}
               >
                 <Plus />
               </button>
