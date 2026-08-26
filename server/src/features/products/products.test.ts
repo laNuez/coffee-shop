@@ -177,7 +177,8 @@ describe('Products API', () => {
           }
         }
       )
-
+      // @ts-expect-error
+      // hono only infers responses from the handler itself, it doesn't know it can respond with 404
       expect(res.status).toBe(404)
     })
   })

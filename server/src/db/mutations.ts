@@ -34,7 +34,10 @@ export const createProduct = async (data: insertProduct) => {
 }
 
 export const deleteProduct = async (id: string) => {
-  return db.delete(productsTable).where(eq(productsTable.id, id))
+  return await db
+    .delete(productsTable)
+    .where(eq(productsTable.id, id))
+    .returning()
 }
 
 export const updateProduct = async (id: string, data: patchProductDB) => {

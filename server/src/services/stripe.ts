@@ -40,9 +40,7 @@ export type ConstructEventAsync = Parameters<
   typeof stripeClient.webhooks.constructEventAsync
 >
 const webhook = async (...args: ConstructEventAsync) => {
-  const event = stripeClient.webhooks.constructEventAsync(...args)
-
-  return event
+  return await stripeClient.webhooks.constructEventAsync(...args)
 }
 
 const stripeService = {

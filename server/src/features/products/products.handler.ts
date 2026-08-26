@@ -42,10 +42,8 @@ const app = new Hono()
 
   .delete('/:id', requireAdmin, async (c) => {
     const id = c.req.param('id')
-    const { rowsAffected } = await deleteProduct(id)
 
-    if (!rowsAffected) return c.json({ error: 'not found' }, 404)
-
+    await productService.remove(id)
     return c.body(null, 204)
   })
 

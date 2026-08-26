@@ -143,7 +143,9 @@ export const productUpdateSchemaDB = productInsertSchema
   })
   .partial()
 
-const cartItemInsertSchema = createInsertSchema(cartItemsTable).omit({
+const cartItemInsertSchema = createInsertSchema(cartItemsTable, {
+  quantity: (schema) => schema.min(1).max(100)
+}).omit({
   id: true
 })
 
@@ -152,7 +154,7 @@ export const addToCartRequestSchema = cartItemInsertSchema.omit({
 })
 
 export const cartItemPatchSchema = createUpdateSchema(cartItemsTable, {
-  quantity: (schema) => schema.min(1)
+  quantity: (schema) => schema.min(1).max(100)
 })
   .pick({
     quantity: true
