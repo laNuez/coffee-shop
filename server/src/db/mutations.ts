@@ -40,6 +40,14 @@ export const deleteProduct = async (id: string) => {
     .returning()
 }
 
+export const softDeleteProduct = async (id: string) => {
+  return await db
+    .update(productsTable)
+    .set({ deletedAt: sql`current_timestamp` })
+    .where(eq(productsTable.id, id))
+    .returning()
+}
+
 export const updateProduct = async (id: string, data: patchProductDB) => {
   const [row] = await db
     .update(productsTable)
@@ -73,6 +81,12 @@ export const deleteFromCart = async (userId: string, id: string) => {
   return await db
     .delete(cartItemsTable)
     .where(and(eq(cartItemsTable.userId, userId), eq(cartItemsTable.id, id)))
+}
+
+export const deleteFromAllCarts = async (productId: string) => {
+  return await db
+    .delete(cartItemsTable)
+    .where(eq(cartItemsTable.productId, productId))
 }
 
 export const deleteUserCart = async (userId: string) => {

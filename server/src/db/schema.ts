@@ -14,7 +14,8 @@ export const productsTable = sqliteTable('products_table', {
   price: int().notNull(),
   category: text().notNull(),
   description: text().notNull(),
-  image: text().notNull()
+  image: text().notNull(),
+  deletedAt: text()
 })
 
 export const usersTable = sqliteTable('users_table', {
@@ -108,7 +109,8 @@ const productInsertSchemaDB = createInsertSchema(productsTable, {
   name: (schema) => schema.min(6),
   image: (schema) => schema.min(1)
 }).omit({
-  id: true
+  id: true,
+  deletedAt: true
 })
 
 // https://stackoverflow.com/questions/72674930/zod-validator-validate-image

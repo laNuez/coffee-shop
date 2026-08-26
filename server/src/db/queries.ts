@@ -1,7 +1,8 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq, isNull } from 'drizzle-orm'
 import { db } from './client'
 import {
   cartItemsTable,
+  orderItemsTable,
   ordersTable,
   productsTable,
   usersTable
@@ -24,8 +25,20 @@ export const getCartByUserId = async (id: string) => {
 
 export const getProducts = async (category?: string) => {
   return await db.query.productsTable.findMany({
-    where: category ? eq(productsTable.category, category) : undefined
+    where: category
+      ? and(
+          eq(productsTable.category, category),
+          isNull(productsTable.deletedAt)
+        )
+      : isNull(productsTable.deletedAt)
   })
+}
+
+export const hasProductOrders = async (id: string) => {
+  const row = await db.query.orderItemsTable.findFirst({
+    where: eq(orderItemsTable.productId, id)
+  })
+  return Boolean(row)
 }
 
 export const getProductById = async (id: string) => {

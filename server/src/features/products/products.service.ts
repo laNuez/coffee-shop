@@ -1,9 +1,13 @@
-import { deleteProduct, updateProduct } from '@server/db/mutations'
-import { getProductById } from '@server/db/queries'
+import {
+  deleteFromAllCarts,
+  deleteProduct,
+  softDeleteProduct,
+  updateProduct
+} from '@server/db/mutations'
+import { getProductById, hasProductOrders } from '@server/db/queries'
 import type { patchProduct, patchProductDB } from '@server/db/schema'
 import { deleteImage, uploadImage } from './images.storage'
 import { HTTPException } from 'hono/http-exception'
-import { isUniqueConstraintError } from '@server/db/utils'
 
 // TODO: delete images if something fails
 
@@ -38,17 +42,18 @@ const update = async (id: string, data: patchProduct) => {
 }
 
 const remove = async (id: string) => {
-  try {
-    const [row] = await deleteProduct(id)
-    if (!row) throw new HTTPException(404, { message: 'Not found' })
+  const row = await getProductById(id)
+  if (!row) throw new HTTPException(404, { message: 'Not found' })
 
-    await deleteImage(row.image)
-  } catch (error) {
-    // Should probably soft delete things tbh
-    if (isUniqueConstraintError(error))
-      throw new HTTPException(409, { message: 'Product linked to past order' })
-    throw error
+  const hasOrders = await hasProductOrders(id)
+
+  if (hasOrders) {
+    await softDeleteProduct(id)
+  } else {
+    await Promise.all([await deleteProduct(id), await deleteImage(row.image)])
   }
+
+  await deleteFromAllCarts(id)
 }
 
 const productService = {

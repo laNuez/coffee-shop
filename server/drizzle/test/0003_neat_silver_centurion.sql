@@ -1,0 +1,1 @@
+ALTER TABLE `products_table` ADD `deleted_at` text;
