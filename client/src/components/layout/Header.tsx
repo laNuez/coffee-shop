@@ -1,25 +1,10 @@
-import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router'
 import { useLogout, useUserStore } from '../../stores/userStore'
 import { Menu } from 'lucide-react'
+import { THEMES } from '../../util/constants'
 
-const THEMES = ['light', 'dark'] as const
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isValidTheme = (theme: any): theme is Theme => {
-  return THEMES.includes(theme)
-}
-type Theme = (typeof THEMES)[number]
 export const Header = () => {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const theme = localStorage.getItem('theme')
-    return isValidTheme(theme) ? theme : THEMES[0]
-  })
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem('theme', theme)
-  }, [theme])
-
+  const setTheme = useUserStore((state) => state.setTheme)
   const user = useUserStore((state) => state.user)
   const logout = useLogout()
   const navigate = useNavigate()
