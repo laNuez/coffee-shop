@@ -28,7 +28,8 @@ export const uploadImage = async (file: File): Promise<string> => {
       Bucket: ENV.BUCKET_NAME,
       Key: key,
       Body: buffer,
-      ContentType: contentType
+      ContentType: contentType,
+      CacheControl: 'public, max-age=31536000, immutable'
     })
   )
 

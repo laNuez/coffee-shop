@@ -57,6 +57,7 @@ export const getCategories = async () => {
   return await db
     .selectDistinct({ category: productsTable.category })
     .from(productsTable)
+    .where(isNull(productsTable.deletedAt))
 }
 
 export const getOrder = async (id: string) => {

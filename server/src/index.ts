@@ -6,6 +6,8 @@ import products from '@server/features/products/products.handler'
 import cart from '@server/features/cart/cart.handler'
 import categories from '@server/features/categories/categories.handler'
 import orders from '@server/features/orders/orders.handler'
+import home from '@server/features/home/home.handler'
+
 import type { Variables } from './types'
 import { HTTPException } from 'hono/http-exception'
 
@@ -26,6 +28,7 @@ export const app = new Hono<Variables>()
   .route('/products', products)
   .route('/cart', cart)
   .route('/orders', orders)
+  .route('/home', home)
   .onError((error, c) => {
     if (error instanceof HTTPException) {
       return c.json({ error: error.message }, error.status)
