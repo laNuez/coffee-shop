@@ -14,6 +14,7 @@ import {
 } from './routes/products'
 import { adminOrdersLoader, ordersLoader } from './routes/orders'
 import { ComponentType } from 'react'
+import { useUserStore } from './stores/userStore'
 
 const lazyRoute =
   (fn: () => Promise<{ default: ComponentType }>) => async () => {
@@ -25,6 +26,9 @@ export const router = createBrowserRouter([
   {
     path: '/',
     Component: DefaultLayout,
+    loader: () => {
+      useUserStore.getState().fetchUser()
+    },
     children: [
       {
         errorElement: <RouteError />,

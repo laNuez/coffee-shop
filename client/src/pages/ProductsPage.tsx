@@ -42,10 +42,10 @@ interface ProductsGridProps {
 const ProductsSide = ({ products }: ProductsGridProps) => {
   return (
     <ProductsGrid>
-      {products.map((p) => (
+      {products.map((p, i) => (
         <Link to={`/product/${p.id}`} key={p.id}>
           <div className="h-fit w-full sm:w-64">
-            <Product product={p} text={formatCents(p.price)} />
+            <Product product={p} text={formatCents(p.price)} priority={i < 6} />
           </div>
         </Link>
       ))}

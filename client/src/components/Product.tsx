@@ -6,6 +6,7 @@ import { Image } from './Image'
 interface ProductProps {
   product: ProductType
   text?: string
+  priority?: boolean
 }
 
 export const Product = (props: ProductProps) => {
@@ -21,6 +22,8 @@ export const Product = (props: ProductProps) => {
           alt={name}
           width={600}
           className="h-full w-full object-cover"
+          loading={props.priority ? 'eager' : 'lazy'}
+          fetchPriority={props.priority ? 'high' : 'auto'}
         />
       </figure>
       <div className="card-body">

@@ -18,9 +18,9 @@ const HomePage = () => {
         <div className="mt-4 grid justify-center">
           <div className="grid max-w-6xl gap-3 md:grid-cols-2 lg:grid-cols-3">
             {home &&
-              home.featured.map((p) => (
+              home.featured.map((p, i) => (
                 <Link to={`product/${p.id}`} key={p.id}>
-                  <Product product={p} />
+                  <Product product={p} priority={i < 3} />
                 </Link>
               ))}
           </div>
