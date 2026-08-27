@@ -1,24 +1,11 @@
 import { Hero } from '../components/Hero'
 import { Product } from '../components/Product'
-import {
-  QueryClient,
-  queryOptions,
-  useSuspenseQuery
-} from '@tanstack/react-query'
-import { getHome } from '../lib/api'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { Link } from 'react-router'
-
-const query = queryOptions({
-  queryKey: ['home'],
-  queryFn: () => getHome()
-})
-
-export const loader = (queryClient: QueryClient) => async () => {
-  return queryClient.ensureQueryData(query)
-}
+import { homeQuery } from '../routes/products'
 
 const HomePage = () => {
-  const { data: home } = useSuspenseQuery(query)
+  const { data: home } = useSuspenseQuery(homeQuery)
 
   return (
     <div>

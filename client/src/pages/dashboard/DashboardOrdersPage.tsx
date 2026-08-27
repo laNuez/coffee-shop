@@ -1,6 +1,4 @@
 import {
-  QueryClient,
-  queryOptions,
   useMutation,
   useQueryClient,
   useSuspenseQuery
@@ -9,26 +7,16 @@ import { Table } from '../../components/Table'
 import { Order, OrderRequest, updateOrder } from '../../lib/api'
 import { formatCents, formatDate } from '../../util/util'
 import { Pencil, Plus } from 'lucide-react'
-import { getOrdersAdmin } from '../../lib/api'
 import { OrderStatusModal } from '../../components/OrderStatusModal'
 import { useState } from 'react'
-
-const ordersQuery = () =>
-  queryOptions({
-    queryKey: ['orders', 'admin'],
-    queryFn: () => getOrdersAdmin()
-  })
-
-export const loader = (queryClient: QueryClient) => async () => {
-  return await queryClient.ensureQueryData(ordersQuery())
-}
+import { adminOrdersQuery } from '../../routes/orders'
 
 interface OrderEdit {
   id: string
   data: OrderRequest
 }
 const DashboardOrdersPage = () => {
-  const { data: orders } = useSuspenseQuery(ordersQuery())
+  const { data: orders } = useSuspenseQuery(adminOrdersQuery())
 
   const client = useQueryClient()
 

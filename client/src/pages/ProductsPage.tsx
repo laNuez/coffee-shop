@@ -1,19 +1,11 @@
-import {
-  QueryClient,
-  queryOptions,
-  useSuspenseQuery
-} from '@tanstack/react-query'
-import {
-  CategoriesResponse,
-  getCategories,
-  getProducts,
-  ProductsResponse
-} from '../lib/api'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { CategoriesResponse, ProductsResponse } from '../lib/api'
 import { Product } from '../components/Product'
-import { Link, LoaderFunctionArgs, useSearchParams } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 import { ProductsGrid } from '../components/ProductsGrid'
 import { PanelLeftIcon } from 'lucide-react'
 import { formatCents } from '../util/util'
+import { categoriesQuery, productsQuery } from '../routes/products'
 
 interface FilterMenuProps {
   categories: CategoriesResponse | undefined
@@ -60,30 +52,6 @@ const ProductsSide = ({ products }: ProductsGridProps) => {
     </ProductsGrid>
   )
 }
-
-const productsQuery = (currentCategory: string | undefined) =>
-  queryOptions({
-    queryKey: ['products', currentCategory],
-    queryFn: () => getProducts(currentCategory)
-  })
-
-const categoriesQuery = queryOptions({
-  queryKey: ['categories'],
-  queryFn: getCategories
-})
-
-export const loader =
-  (queryClient: QueryClient) =>
-  async ({ request }: LoaderFunctionArgs) => {
-    const searchParams = new URL(request.url).searchParams
-    const category = searchParams.get('category')
-
-    const products = await queryClient.ensureQueryData(
-      productsQuery(category || undefined)
-    )
-    const categories = await queryClient.ensureQueryData(categoriesQuery)
-    return { products, categories }
-  }
 
 const ProductsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()

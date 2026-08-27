@@ -1,36 +1,20 @@
 import {
-  QueryClient,
-  queryOptions,
   useMutation,
   useQueryClient,
   useSuspenseQuery
 } from '@tanstack/react-query'
 import { Table } from '../../components/Table'
-import {
-  addProduct,
-  deleteProduct,
-  editProduct,
-  getProducts
-} from '../../lib/api'
+import { addProduct, deleteProduct, editProduct } from '../../lib/api'
 import { formatCents, getImageUrl } from '../../util/util'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
 import { CreateProductRequest, Product, UpdateProductRequest } from 'shared'
 import { useState } from 'react'
 import { ProductFormModal } from '../../components/ProductFormModal'
 import { Image } from '../../components/Image'
-
-const productsQuery = () =>
-  queryOptions({
-    queryKey: ['products', 'admin'],
-    queryFn: () => getProducts()
-  })
-
-export const loader = (queryClient: QueryClient) => async () => {
-  return await queryClient.ensureQueryData(productsQuery())
-}
+import { adminProductsQuery } from '../../routes/products'
 
 const DashboardProductsPage = () => {
-  const { data: products } = useSuspenseQuery(productsQuery())
+  const { data: products } = useSuspenseQuery(adminProductsQuery())
 
   const client = useQueryClient()
 

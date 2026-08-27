@@ -1,89 +1,122 @@
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Navigate,
-  Route
-} from 'react-router'
+import { createBrowserRouter, Navigate } from 'react-router'
 import DefaultLayout from './components/layout/DefaultLayout'
-import CartPage, { loader as cartLoader } from './pages/CartPage'
-import HomePage, { loader as homepageLoader } from './pages/HomePage'
-import LoginPage from './pages/LoginPage'
-import ProductPage, { loader as productLoader } from './pages/ProductPage'
-import ProductsPage, { loader as productsLoader } from './pages/ProductsPage'
-import SignUpPage from './pages/RegisterPage'
-import DashboardPage from './pages/DashboardPage'
-import OrdersPage, { loader as ordersLoader } from './pages/OrdersPage'
 import { RequireAuth } from './components/RequireAuth'
-import { queryClient } from './lib/query'
 import { RequireAdmin } from './components/RequireAdmin'
 import { RouteError } from './components/RouteError'
 import NotFound from './pages/NotFoundPage'
-import DashboardProductsPage from './pages/dashboard/DashboardProductsPage'
-import DashboardOrdersPage, {
-  loader as ordersAdminLoader
-} from './pages/dashboard/DashboardOrdersPage'
+import { queryClient } from './lib/query'
+import { cartLoader } from './routes/cart'
+import {
+  adminProductsLoader,
+  homeLoader,
+  productLoader,
+  productsLoader
+} from './routes/products'
+import { adminOrdersLoader, ordersLoader } from './routes/orders'
+import { ComponentType } from 'react'
 
-export const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/" element={<DefaultLayout />}>
-      <Route errorElement={<RouteError />}>
-        <Route
-          index
-          element={<HomePage />}
-          loader={homepageLoader(queryClient)}
-        />
-        <Route path="register" element={<SignUpPage />} />
-        <Route
-          path="cart"
-          element={
-            <RequireAuth>
-              <CartPage />
-            </RequireAuth>
+const lazyRoute =
+  (fn: () => Promise<{ default: ComponentType }>) => async () => {
+    const { default: Component } = await fn()
+    return { Component }
+  }
+
+export const router = createBrowserRouter([
+  {
+    path: '/',
+    Component: DefaultLayout,
+    children: [
+      {
+        errorElement: <RouteError />,
+        children: [
+          {
+            index: true,
+            loader: homeLoader(queryClient),
+            lazy: lazyRoute(() => import('./pages/HomePage'))
+          },
+          {
+            path: 'register',
+            lazy: async () => {
+              const { default: SignUpPage } = await import(
+                './pages/RegisterPage'
+              )
+              return { Component: SignUpPage }
+            }
+          },
+          {
+            path: 'cart',
+            loader: cartLoader(queryClient),
+            lazy: lazyRoute(() => import('./pages/CartPage'))
+          },
+          {
+            path: 'login',
+            lazy: lazyRoute(() => import('./pages/LoginPage'))
+          },
+          {
+            path: 'product/:id',
+            loader: productLoader(queryClient),
+            lazy: lazyRoute(() => import('./pages/ProductPage'))
+          },
+          {
+            path: 'products',
+            loader: productsLoader(queryClient),
+            lazy: lazyRoute(() => import('./pages/ProductsPage'))
+          },
+          {
+            path: 'orders',
+            loader: ordersLoader(queryClient),
+            lazy: async () => {
+              const { default: OrdersPage } = await import('./pages/OrdersPage')
+              return {
+                Component: () => (
+                  <RequireAuth>
+                    <OrdersPage />
+                  </RequireAuth>
+                )
+              }
+            }
+          },
+          {
+            path: 'admin/dashboard',
+            lazy: async () => {
+              const { default: DashboardPage } = await import(
+                './pages/DashboardPage'
+              )
+              return {
+                Component: () => (
+                  <RequireAdmin>
+                    <DashboardPage />
+                  </RequireAdmin>
+                )
+              }
+            },
+            children: [
+              {
+                index: true,
+                element: <Navigate to="products" />
+              },
+              {
+                path: 'products',
+                loader: adminProductsLoader(queryClient),
+                lazy: lazyRoute(
+                  () => import('./pages/dashboard/DashboardProductsPage')
+                )
+              },
+              {
+                path: 'orders',
+                loader: adminOrdersLoader(queryClient),
+                lazy: lazyRoute(
+                  () => import('./pages/dashboard/DashboardOrdersPage')
+                )
+              }
+            ]
+          },
+          {
+            path: '*',
+            element: <NotFound />
           }
-          loader={cartLoader(queryClient)}
-        />
-        <Route path="login" element={<LoginPage />} />
-        <Route
-          path="product/:id"
-          element={<ProductPage />}
-          loader={productLoader(queryClient)}
-        />
-        <Route
-          path="products"
-          element={<ProductsPage />}
-          loader={productsLoader(queryClient)}
-        />
-        <Route
-          path="orders"
-          element={
-            <RequireAuth>
-              <OrdersPage />
-            </RequireAuth>
-          }
-          loader={ordersLoader(queryClient)}
-        />
-        <Route
-          path="admin/dashboard"
-          element={
-            <RequireAdmin>
-              <DashboardPage />
-            </RequireAdmin>
-          }
-        >
-          <Route index element={<Navigate to="products" />} />
-          <Route
-            path="products"
-            element={<DashboardProductsPage />}
-            loader={productsLoader(queryClient)}
-          />
-          <Route
-            path="orders"
-            element={<DashboardOrdersPage />}
-            loader={ordersAdminLoader(queryClient)}
-          />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Route>
-    </Route>
-  )
-)
+        ]
+      }
+    ]
+  }
+])

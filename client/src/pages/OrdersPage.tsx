@@ -1,23 +1,10 @@
-import {
-  QueryClient,
-  queryOptions,
-  useMutation,
-  useSuspenseQuery
-} from '@tanstack/react-query'
-import { continueCheckout, getOrders, Order as OrderType } from '../lib/api'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import { continueCheckout, Order as OrderType } from '../lib/api'
 
 import { formatCents, formatDate, getImageUrl } from '../util/util'
 import { Link } from 'react-router'
 import { Image } from '../components/Image'
-
-const query = queryOptions({
-  queryKey: ['orders'],
-  queryFn: getOrders
-})
-
-export const loader = (queryClient: QueryClient) => async () => {
-  queryClient.ensureQueryData(query)
-}
+import { ordersQuery } from '../routes/orders'
 
 interface OrderProps {
   order: OrderType
@@ -101,7 +88,7 @@ const Order = ({
 }
 
 const OrdersPage = () => {
-  const { data: orders } = useSuspenseQuery(query)
+  const { data: orders } = useSuspenseQuery(ordersQuery)
 
   const continueCheckoutMutation = useMutation({
     mutationFn: continueCheckout,

@@ -1,25 +1,15 @@
 import {
-  QueryClient,
-  queryOptions,
   useMutation,
   useQueryClient,
   useSuspenseQuery
 } from '@tanstack/react-query'
 import { formatCents, getImageUrl } from '../util/util'
 
-import { checkout, delCartItem, getCart } from '../lib/api'
+import { checkout, delCartItem } from '../lib/api'
 import { X } from 'lucide-react'
 import { Link } from 'react-router'
 import { Image } from '../components/Image'
-
-const cartQuery = queryOptions({
-  queryKey: ['cart'],
-  queryFn: getCart
-})
-
-export const loader = (queryClient: QueryClient) => async () => {
-  queryClient.ensureQueryData(cartQuery)
-}
+import { cartQuery } from '../routes/cart'
 
 const CartPage = () => {
   const { data: cart } = useSuspenseQuery(cartQuery)

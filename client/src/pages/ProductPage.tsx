@@ -1,35 +1,20 @@
 import {
-  QueryClient,
-  queryOptions,
   useMutation,
   useQueryClient,
   useSuspenseQuery
 } from '@tanstack/react-query'
-import { Link, LoaderFunctionArgs, useParams } from 'react-router'
-import { addToCart, AddToCartInput, getProduct } from '../lib/api'
+import { Link, useParams } from 'react-router'
+import { addToCart, AddToCartInput } from '../lib/api'
 import { formatCents, getImageUrl } from '../util/util'
 import { useRef, useState } from 'react'
 import { Plus, Minus, Check } from 'lucide-react'
 import { Modal } from '../components/Modal'
 import { useUserStore } from '../stores/userStore'
 import { Image } from '../components/Image'
+import { productQuery } from '../routes/products'
 type ProductParams = {
   id: string
 }
-
-const productQuery = (id: string) =>
-  queryOptions({
-    queryKey: ['products', id],
-    queryFn: () => {
-      return getProduct(id)
-    }
-  })
-
-export const loader =
-  (queryClient: QueryClient) =>
-  async ({ params }: LoaderFunctionArgs) => {
-    return await queryClient.ensureQueryData(productQuery(params.id!))
-  }
 
 const ProductPage = () => {
   const { id } = useParams() as ProductParams
