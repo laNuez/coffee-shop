@@ -1,7 +1,18 @@
 @import 'tailwindcss';
 @plugin "daisyui";
 
+@font-face {
+  font-family: InterVariable;
+  src: url('/fonts/InterVariable.woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 @theme {
-  --font-sans: Inter, sans-serif;
-  --font-sans--font-feature-settings: 'cv11';
+  --font-sans:
+    InterVariable, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --font-sans--font-feature-settings: 'cv11' 1, 'calt' 1, 'liga' 1;
+  --font-sans--font-variation-settings: 'opsz' 14;
 }
