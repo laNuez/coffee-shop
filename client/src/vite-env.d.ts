@@ -3,6 +3,7 @@
 interface ImportMetaEnv {
   readonly VITE_IMAGE_PREFIX_URL: string
   readonly VITE_APP_NAME: string
+  readonly VITE_IMAGE_TRANSFORM_URL?: string
 }
 
 interface ImportMeta {

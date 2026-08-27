@@ -10,6 +10,7 @@ import { formatCents, getImageUrl } from '../util/util'
 import { checkout, delCartItem, getCart } from '../lib/api'
 import { X } from 'lucide-react'
 import { Link } from 'react-router'
+import { Image } from '../components/Image'
 
 const cartQuery = queryOptions({
   queryKey: ['cart'],
@@ -67,12 +68,11 @@ const CartPage = () => {
                     <tr key={item.id}>
                       <td>
                         <figure className="max-w-52 rounded-sm">
-                          <img
-                            loading="lazy"
-                            decoding="async"
+                          <Image
                             src={getImageUrl(item.product.image)}
                             alt={item.product.name}
                             className="object-fit"
+                            width={100}
                           />
                         </figure>
                       </td>
@@ -101,10 +101,11 @@ const CartPage = () => {
                   key={item.id}
                 >
                   <figure className="w-50">
-                    <img
+                    <Image
                       src={getImageUrl(item.product.image)}
                       alt={item.product.image}
                       className="object-cover"
+                      width={600}
                     />
                   </figure>
                   <div className="card-body w-full p-5">

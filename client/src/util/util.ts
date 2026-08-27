@@ -20,6 +20,17 @@ export type ApiError = {
   error: string
 }
 
+const TRANS_URL = import.meta.env.VITE_IMAGE_TRANSFORM_URL
+export const getOptimizeImage = (src: string, width: number) => {
+  const url = new URL(src)
+  if (!TRANS_URL) return src
+
+  const trans = new URL(TRANS_URL)
+  if (url.origin !== trans.origin) return src
+
+  return `${url.origin}/cdn-cgi/image/width=${width},format=auto${url.pathname}`
+}
+
 export const getImageUrl = (key: string) => {
   return key
     ? `${import.meta.env.VITE_IMAGE_PREFIX_URL}/${key}`

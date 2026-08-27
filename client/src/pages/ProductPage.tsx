@@ -12,6 +12,7 @@ import { useRef, useState } from 'react'
 import { Plus, Minus, Check } from 'lucide-react'
 import { Modal } from '../components/Modal'
 import { useUserStore } from '../stores/userStore'
+import { Image } from '../components/Image'
 type ProductParams = {
   id: string
 }
@@ -85,7 +86,13 @@ const ProductPage = () => {
       <div className="grid items-center md:grid-cols-2">
         <div className="p-4">
           <figure>
-            <img src={getImageUrl(product.image)} alt={product.name} />
+            <Image
+              src={getImageUrl(product.image)}
+              alt={product.name}
+              width={800}
+              loading="eager"
+              fetchPriority="high"
+            />
           </figure>
         </div>
         <div className="flex max-w-96 flex-col gap-2 p-4">

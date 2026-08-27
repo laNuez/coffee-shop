@@ -17,6 +17,7 @@ import { Pencil, Plus, Trash2 } from 'lucide-react'
 import { CreateProductRequest, Product, UpdateProductRequest } from 'shared'
 import { useState } from 'react'
 import { ProductFormModal } from '../../components/ProductFormModal'
+import { Image } from '../../components/Image'
 
 const productsQuery = () =>
   queryOptions({
@@ -135,8 +136,8 @@ const DashboardProductsPage = () => {
             {
               header: 'Image',
               accessor: (row) => (
-                <img
-                  width={'100px'}
+                <Image
+                  width={100}
                   src={getImageUrl(row.image)}
                   alt={row.name}
                 />

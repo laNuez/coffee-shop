@@ -8,6 +8,7 @@ import { continueCheckout, getOrders, Order as OrderType } from '../lib/api'
 
 import { formatCents, formatDate, getImageUrl } from '../util/util'
 import { Link } from 'react-router'
+import { Image } from '../components/Image'
 
 const query = queryOptions({
   queryKey: ['orders'],
@@ -69,10 +70,11 @@ const Order = ({
             className="border-base-300 flex items-center gap-3 border-b p-4 last:border-b-0"
           >
             <div className="h-24 w-24">
-              <img
+              <Image
                 src={getImageUrl(p.image)}
                 alt={p.name}
                 className="h-full w-full rounded-sm object-cover"
+                width={600}
               />
             </div>
             <p className="text-lg">
