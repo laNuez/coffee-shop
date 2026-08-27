@@ -15,6 +15,14 @@ export const getProducts = async (category?: string) => {
   return await res.json()
 }
 
+const $getHome = client.api.home.$get
+export type Home = InferSuccessResponseType<typeof $getHome>
+export const getHome = async () => {
+  const res = await $getHome()
+  if (!res.ok) throw await res.json()
+  return await res.json()
+}
+
 export const getProduct = async (id: string) => {
   const res = await client.api.products[':id'].$get({
     param: {

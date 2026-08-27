@@ -48,7 +48,7 @@ const CartPage = () => {
 
   return (
     <div className="mx-auto grid min-h-96 max-w-4xl grid-cols-1 p-4 lg:grid-cols-[2fr_1fr]">
-      <div className="bg-base-200 p-4">
+      <div className="bg-base-200 md:p4 p-2">
         <h2 className="mb-4 text-xl font-bold">Shopping cart</h2>
         {cart.length > 0 ? (
           <>
@@ -100,7 +100,7 @@ const CartPage = () => {
                   className="card card-side bg-base-100 shadow-sm"
                   key={item.id}
                 >
-                  <figure className="w-50">
+                  <figure className="w-40 md:w-50">
                     <Image
                       src={getImageUrl(item.product.image)}
                       alt={item.product.image}
