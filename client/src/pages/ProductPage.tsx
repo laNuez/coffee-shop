@@ -70,7 +70,7 @@ const ProductPage = () => {
       </Modal>
       <div className="grid items-center md:grid-cols-2">
         <div className="p-4">
-          <figure>
+          <figure className="aspect-[1264/848]">
             <Image
               src={getImageUrl(product.image)}
               alt={product.name}

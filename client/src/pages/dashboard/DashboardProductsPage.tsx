@@ -26,7 +26,12 @@ const DashboardProductsPage = () => {
   const productDeleteMutation = useMutation({
     mutationKey: ['products', 'admin'],
     mutationFn: (id: string) => deleteProduct(id),
-    onSuccess: () => {
+    onMutate: (id) => {
+      client.setQueryData<Product[]>(['products', 'admin'], (prev) =>
+        prev?.filter((p) => p.id !== id)
+      )
+    },
+    onSettled: () => {
       client.invalidateQueries({ queryKey: ['products'] })
       client.invalidateQueries({ queryKey: ['categories'] })
     }
