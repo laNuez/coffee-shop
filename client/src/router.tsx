@@ -15,6 +15,7 @@ import {
 import { adminOrdersLoader, ordersLoader } from './routes/orders'
 import { ComponentType } from 'react'
 import { useUserStore } from './stores/userStore'
+import { type Product } from 'shared'
 
 const lazyRoute =
   (fn: () => Promise<{ default: ComponentType }>) => async () => {
@@ -59,7 +60,9 @@ export const router = createBrowserRouter([
             path: 'product/:id',
             loader: productLoader(queryClient),
             lazy: lazyRoute(() => import('./pages/ProductPage')),
-            handle: { title: 'Product' }
+            handle: {
+              title: (data: Product | undefined) => data?.name
+            }
           },
           {
             path: 'products',

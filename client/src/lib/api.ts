@@ -29,7 +29,7 @@ export const getProduct = async (id: string) => {
       id
     }
   })
-  if (!res.ok) throw await res.json()
+  if (!res.ok) throw { status: res.status, ...(await res.json()) }
   return await res.json()
 }
 
