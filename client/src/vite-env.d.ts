@@ -5,6 +5,7 @@ interface ImportMetaEnv {
   readonly VITE_APP_NAME: string
   readonly VITE_IMAGE_TRANSFORM_URL?: string
   readonly VITE_CANONICAL_URL: string
+  readonly VITE_NAV_GITHUB_LINK: string
 }
 
 interface ImportMeta {

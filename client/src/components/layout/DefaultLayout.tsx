@@ -1,4 +1,5 @@
 import { DocumentTitle } from '../DocumentTitle'
+import { Footer } from './Footer'
 import { Header } from './Header'
 import { Outlet, ScrollRestoration } from 'react-router'
 
@@ -9,6 +10,7 @@ const DefaultLayout = () => {
       <Header />
       <div className="flex-1">{<Outlet />}</div>
       <ScrollRestoration />
+      <Footer />
     </div>
   )
 }
