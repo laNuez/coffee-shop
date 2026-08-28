@@ -36,35 +36,36 @@ export const router = createBrowserRouter([
           {
             index: true,
             loader: homeLoader(queryClient),
-            lazy: lazyRoute(() => import('./pages/HomePage'))
+            lazy: lazyRoute(() => import('./pages/HomePage')),
+            handle: { title: 'Home' }
           },
           {
             path: 'register',
-            lazy: async () => {
-              const { default: SignUpPage } = await import(
-                './pages/RegisterPage'
-              )
-              return { Component: SignUpPage }
-            }
+            lazy: lazyRoute(() => import('./pages/RegisterPage')),
+            handle: { title: 'Sign up' }
           },
           {
             path: 'cart',
             loader: cartLoader(queryClient),
-            lazy: lazyRoute(() => import('./pages/CartPage'))
+            lazy: lazyRoute(() => import('./pages/CartPage')),
+            handle: { title: 'Cart' }
           },
           {
             path: 'login',
-            lazy: lazyRoute(() => import('./pages/LoginPage'))
+            lazy: lazyRoute(() => import('./pages/LoginPage')),
+            handle: { title: 'Login' }
           },
           {
             path: 'product/:id',
             loader: productLoader(queryClient),
-            lazy: lazyRoute(() => import('./pages/ProductPage'))
+            lazy: lazyRoute(() => import('./pages/ProductPage')),
+            handle: { title: 'Product' }
           },
           {
             path: 'products',
             loader: productsLoader(queryClient),
-            lazy: lazyRoute(() => import('./pages/ProductsPage'))
+            lazy: lazyRoute(() => import('./pages/ProductsPage')),
+            handle: { title: 'Store' }
           },
           {
             path: 'orders',
@@ -78,7 +79,8 @@ export const router = createBrowserRouter([
                   </RequireAuth>
                 )
               }
-            }
+            },
+            handle: { title: 'Orders' }
           },
           {
             path: 'admin/dashboard',
@@ -104,20 +106,23 @@ export const router = createBrowserRouter([
                 loader: adminProductsLoader(queryClient),
                 lazy: lazyRoute(
                   () => import('./pages/dashboard/DashboardProductsPage')
-                )
+                ),
+                handle: { title: 'Dashboard' }
               },
               {
                 path: 'orders',
                 loader: adminOrdersLoader(queryClient),
                 lazy: lazyRoute(
                   () => import('./pages/dashboard/DashboardOrdersPage')
-                )
+                ),
+                handle: { title: 'Dashboard' }
               }
             ]
           },
           {
             path: '*',
-            element: <NotFound />
+            element: <NotFound />,
+            handle: { title: 'Not Found' }
           }
         ]
       }
