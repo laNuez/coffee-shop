@@ -6,23 +6,17 @@ import type { Variables } from '@server/types'
 import { requireAuth } from '@server/middleware/userContext'
 import userService, { loginSchema } from './auth.service'
 import { getCookieOptions } from './auth.config'
+import { zValidator } from '@server/utils/zod-validator'
 
 const app = new Hono<Variables>()
-  .post('/register', async (c) => {
-    const body = await c.req.json().catch(() => {})
-    const { success, data, error } = userInsertSchema.safeParse(body)
-    if (!success) return c.json({ error: z.treeifyError(error) }, 400)
-
+  .post('/register', zValidator('json', userInsertSchema), async (c) => {
+    const data = c.req.valid('json')
     const user = await userService.register(data)
     return c.json(user, 201)
   })
 
-  .post('/login', async (c) => {
-    const body = await c.req.json()
-
-    const { success, data, error } = loginSchema.safeParse(body)
-    if (!success) return c.json({ error: z.treeifyError(error) }, 400)
-
+  .post('/login', zValidator('json', loginSchema), async (c) => {
+    const data = c.req.valid('json')
     const accessToken = await userService.login(data)
 
     setCookie(c, 'access_token', accessToken, getCookieOptions(c))
@@ -34,9 +28,7 @@ const app = new Hono<Variables>()
     return c.body(null, 200)
   })
   .get('/me', requireAuth, (c) => {
-    const user = c.get('currentUser')
-    if (!user) return c.json(null, 401)
-
+    const user = c.get('currentUser')!
     return c.json(user, 200)
   })
 
