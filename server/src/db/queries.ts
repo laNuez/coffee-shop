@@ -41,9 +41,12 @@ export const hasProductOrders = async (id: string) => {
   return Boolean(row)
 }
 
+/**
+ * Excludes soft deleted products
+ */
 export const getProductById = async (id: string) => {
   return await db.query.productsTable.findFirst({
-    where: eq(productsTable.id, id)
+    where: and(eq(productsTable.id, id), isNull(productsTable.deletedAt))
   })
 }
 

@@ -23,7 +23,7 @@ const app = new Hono<Variables>()
 
     return c.body(null, 200)
   })
-  .post('/logout', requireAuth, (c) => {
+  .post('/logout', (c) => {
     deleteCookie(c, 'access_token', getCookieOptions(c))
     return c.body(null, 200)
   })

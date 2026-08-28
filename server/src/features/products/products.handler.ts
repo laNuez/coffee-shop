@@ -6,6 +6,7 @@ import { requireAdmin } from '@server/middleware/userContext'
 import { Hono } from 'hono'
 import { deleteImage, uploadImage } from './images.storage'
 import productService from './products.service'
+import { HTTPException } from 'hono/http-exception'
 
 const app = new Hono()
   .post(
@@ -50,7 +51,7 @@ const app = new Hono()
   .get('/:id', async (c) => {
     const id = c.req.param('id')
     const product = await getProductById(id)
-    if (!product) return c.json({ error: 'not found' }, 404)
+    if (!product) throw new HTTPException(404, { message: 'Not found' })
 
     return c.json(product)
   })

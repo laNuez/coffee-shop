@@ -66,7 +66,7 @@ export const addToCart = async (data: InsertCartParams) => {
     .onConflictDoUpdate({
       target: [cartItemsTable.userId, cartItemsTable.productId],
       set: {
-        quantity: sql`${cartItemsTable.quantity} + ${data.quantity}`
+        quantity: sql`MIN(100, ${cartItemsTable.quantity} + ${data.quantity})`
       }
     })
     .returning()

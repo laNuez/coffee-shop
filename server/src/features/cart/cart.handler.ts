@@ -1,10 +1,15 @@
 import { zValidator } from '@server/utils/zod-validator'
 import { addToCart, deleteFromCart, updateCartItem } from '@server/db/mutations'
-import { getCartByUserId, getCartItemById } from '@server/db/queries'
+import {
+  getCartByUserId,
+  getCartItemById,
+  getProductById
+} from '@server/db/queries'
 import { addToCartRequestSchema, cartItemPatchSchema } from '@server/db/schema'
 import { requireAuth } from '@server/middleware/userContext'
 import type { Variables } from '@server/types'
 import { Hono } from 'hono'
+import { HTTPException } from 'hono/http-exception'
 
 const app = new Hono<Variables>()
   .get('/', requireAuth, async (c) => {
@@ -23,6 +28,9 @@ const app = new Hono<Variables>()
     async (c) => {
       const user = c.get('currentUser')!
       const body = c.req.valid('json')
+
+      const product = await getProductById(body.productId)
+      if (!product) throw new HTTPException(404, { message: 'Not found' })
 
       const row = await addToCart({
         ...body,
