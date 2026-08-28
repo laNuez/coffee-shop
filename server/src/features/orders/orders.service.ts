@@ -50,8 +50,8 @@ const createCheckout = async (user: UserFromToken, origin: string) => {
       userId: user.id,
       orderId: order.id
     },
-    success_url: `${origin}/`,
-    cancel_url: `${origin}/cart`,
+    success_url: `${origin}/orders`,
+    cancel_url: `${origin}/orders`,
     customer_email: user.email
   })
   if (!stripeSession.url)

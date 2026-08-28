@@ -10,7 +10,8 @@
     "db:generate": "bun drizzle-kit generate",
     "db:migrate": "bun drizzle-kit migrate",
     "db:test:generate": "bun --env-file=.env.test drizzle-kit generate --config=drizzle-test.config.ts",
-    "db:test:migrate": "bun --env-file=.env.test drizzle-kit migrate --config=drizzle-test.config.ts"
+    "db:test:migrate": "bun --env-file=.env.test drizzle-kit migrate --config=drizzle-test.config.ts",
+    "db:seed": "bun src/db/seed.ts"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.9.0",
