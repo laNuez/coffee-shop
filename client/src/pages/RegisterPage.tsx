@@ -26,7 +26,7 @@ const RegisterPage = () => {
     registerMutation.mutate()
   }
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center p-4">
       <div>
         <form onSubmit={handleSubmit}>
           <div className="gap 3 card flex w-96 flex-col justify-between p-2 shadow-md">
