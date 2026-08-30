@@ -1,16 +1,16 @@
-import { useRouteError } from 'react-router'
+import { Navigate, useRouteError } from 'react-router'
 import NotFound from '../pages/NotFoundPage'
 import { DocumentTitle } from './DocumentTitle'
+import { NotFoundError, UnauthorizedError } from '../util/util'
 
-// TODO: rework errors and use a custom fetcher?
 export const RouteError = () => {
   const error = useRouteError()
 
-  const { status } = error as {
-    status: number
+  if (error instanceof UnauthorizedError) {
+    return <Navigate to="/login" replace state={{ path: location.pathname }} />
   }
 
-  if (status === 404)
+  if (error instanceof NotFoundError)
     return (
       <>
         <DocumentTitle title="Not Found" />
