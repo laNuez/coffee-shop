@@ -7,11 +7,12 @@ import { Link, useParams } from 'react-router'
 import { addToCart, AddToCartInput } from '../lib/api'
 import { formatCents, getImageUrl } from '../util/util'
 import { useRef, useState } from 'react'
-import { Plus, Minus, Check } from 'lucide-react'
+import { Check } from 'lucide-react'
 import { Modal } from '../components/Modal'
 import { useUserStore } from '../stores/userStore'
 import { Image } from '../components/Image'
 import { productQuery } from '../routes/products'
+import { QuantitySelector } from '../components/QuantitySelector'
 type ProductParams = {
   id: string
 }
@@ -88,19 +89,14 @@ const ProductPage = () => {
           {product.description}
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
-              <button
-                className="btn"
-                onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-              >
-                <Minus />
-              </button>
-              <span className="w-8 text-center">{quantity}</span>
-              <button
-                className="btn"
-                onClick={() => setQuantity((prev) => Math.min(100, prev + 1))}
-              >
-                <Plus />
-              </button>
+              <QuantitySelector
+                quantity={quantity}
+                onDecrease={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                onIncrease={() =>
+                  setQuantity((prev) => Math.min(100, prev + 1))
+                }
+                buttonClassName="btn-md"
+              />
               <button
                 className="btn btn-primary"
                 onClick={handleAddToCart}
