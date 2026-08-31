@@ -5,23 +5,28 @@ import { cartQuery } from '../routes/cart'
 export const useUpdateCartItem = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (args: { id: string; quantity: number }) =>
-      updateCartItem(args.id, { quantity: args.quantity }),
+    mutationFn: (args: {
+      id: string
+      quantity: number
+      optimistic?: boolean
+    }) => updateCartItem(args.id, { quantity: args.quantity }),
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: cartQuery.queryKey })
 
       const previousCart = queryClient.getQueryData(cartQuery.queryKey)
 
-      queryClient.setQueryData(cartQuery.queryKey, (prev) =>
-        prev?.map((item) =>
-          item.id === variables.id
-            ? {
-                ...item,
-                quantity: variables.quantity
-              }
-            : item
+      if (variables.optimistic) {
+        queryClient.setQueryData(cartQuery.queryKey, (prev) =>
+          prev?.map((item) =>
+            item.id === variables.id
+              ? {
+                  ...item,
+                  quantity: variables.quantity
+                }
+              : item
+          )
         )
-      )
+      }
 
       return { previousCart }
     },
@@ -29,8 +34,6 @@ export const useUpdateCartItem = () => {
       if (context?.previousCart) {
         queryClient.setQueryData(cartQuery.queryKey, context.previousCart)
       }
-    },
-    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: cartQuery.queryKey })
     }
   })

@@ -11,9 +11,9 @@ import { Link } from 'react-router'
 import { Image } from '../components/Image'
 import { cartQuery } from '../routes/cart'
 import { Table } from '../components/Table'
-import { useDebounceCallback } from '../hooks/useDebounceCallback'
 import { useUpdateCartItem } from '../hooks/useUpdateCartItem'
 import { QuantitySelector } from '../components/QuantitySelector'
+import { useKeyDebounceCallback } from '../hooks/useKeyDebounceCallback'
 
 const CartPage = () => {
   const { data: cart } = useSuspenseQuery(cartQuery)
@@ -40,14 +40,16 @@ const CartPage = () => {
     0
   )
 
-  const { mutate: itemQuantityMutation } = useUpdateCartItem()
+  const { mutate: itemQuantityMutation, isPending: isUpdatingQuantity } =
+    useUpdateCartItem()
 
-  const debouncedUpdateCartItem = useDebounceCallback(
-    (id: string, quantity: number) => {
-      itemQuantityMutation({ id, quantity })
-    },
-    300
-  )
+  const {
+    debounce,
+    cancel,
+    pendingCount: pendingQtyUpdateCount
+  } = useKeyDebounceCallback((id: string, safeQuantity: number) => {
+    itemQuantityMutation({ id, quantity: safeQuantity, optimistic: false })
+  }, 250)
 
   const handleQuantityChange = async (id: string, quantity: number) => {
     const safeQuantity = Math.max(0, Math.min(100, quantity))
@@ -65,12 +67,12 @@ const CartPage = () => {
     )
 
     if (safeQuantity === 0) {
-      debouncedUpdateCartItem.cancel()
+      cancel(id)
       handleDel(id)
       return
     }
 
-    debouncedUpdateCartItem.debounced(id, safeQuantity)
+    debounce(id, safeQuantity)
   }
 
   const isDeleting = (itemId: string) =>
@@ -234,7 +236,13 @@ const CartPage = () => {
           <button
             className="btn btn-primary w-full"
             onClick={() => checkoutMutation.mutate()}
-            disabled={checkoutMutation.isPending || !cart.length}
+            disabled={
+              checkoutMutation.isPending ||
+              !cart.length ||
+              isUpdatingQuantity ||
+              pendingQtyUpdateCount > 0 ||
+              itemDelMutation.isPending
+            }
           >
             {checkoutMutation.isPending || checkoutMutation.isSuccess
               ? 'Redirecting...'

@@ -4,7 +4,7 @@ export const useDebounceCallback = <Args extends unknown[]>(
   callback: (...args: Args) => void,
   timeout: number
 ) => {
-  const timeoutId = useRef<number>(null)
+  const timeoutId = useRef<ReturnType<typeof setTimeout>>(null)
 
   const remTimeout = () => {
     if (timeoutId.current) {
