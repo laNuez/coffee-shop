@@ -58,21 +58,19 @@ export const useUserStore = create<State & Action>()(
 
 export const useFetchUser = () => {
   const fetchUser = useUserStore((state) => state.fetchUser)
-  const fn = async () => {
-    return fetchUser()
-  }
 
-  return useCallback(fn, [fetchUser])
+  return useCallback(async () => {
+    return fetchUser()
+  }, [fetchUser])
 }
 
 export const useLogout = () => {
   const clearUser = useUserStore((state) => state.clearUser)
 
-  const fn = async () => {
+  return useCallback(async () => {
     await client.api.logout.$post()
     clearUser()
-  }
-  return useCallback(fn, [clearUser])
+  }, [clearUser])
 }
 
 useUserStore.subscribe(

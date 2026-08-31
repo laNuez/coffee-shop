@@ -22,7 +22,7 @@ const DashboardProductsPage = () => {
   // product selected to edit
   const [product, setProduct] = useState<Product>()
 
-  const [formKey, setFormKey] = useState(Date.now())
+  const [formKey, setFormKey] = useState(Date.now)
   const productDeleteMutation = useMutation({
     mutationKey: ['products', 'admin'],
     mutationFn: (id: string) => deleteProduct(id),
