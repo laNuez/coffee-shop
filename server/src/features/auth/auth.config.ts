@@ -5,7 +5,7 @@ const cookieOptions: CookieOptions = {
   path: '/',
   httpOnly: true,
   sameSite: 'lax',
-  maxAge: 1000 * 60 * 60
+  maxAge: 60 * 60
 }
 
 export const getCookieOptions = (c: Context): CookieOptions => {
