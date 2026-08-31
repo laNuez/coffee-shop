@@ -91,6 +91,19 @@ export const addToCart = async (args: AddToCartInput) => {
   return await res.json()
 }
 
+const $updateCart = client.api.cart[':id'].$patch
+export type UpdateCartRequest = InferRequestType<typeof $updateCart>['json']
+export const updateCartItem = async (id: string, data: UpdateCartRequest) => {
+  const res = await $updateCart({
+    param: {
+      id
+    },
+    json: data
+  })
+  if (!res.ok) throw await res.json()
+  return await res.json()
+}
+
 const $getCategories = client.api.categories.$get
 export type CategoriesResponse = InferSuccessResponseType<typeof $getCategories>
 export const getCategories = async () => {

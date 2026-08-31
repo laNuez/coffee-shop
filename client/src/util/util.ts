@@ -1,5 +1,7 @@
 import { InferResponseType } from 'hono'
 import { StatusCode, SuccessStatusCode } from 'hono/utils/http-status'
+import { ClassValue, clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 
 export const formatCents = (cents: number) => {
   const dollar = cents / 100
@@ -32,7 +34,7 @@ export const getOptimizeImage = (src: string, width: number) => {
 }
 
 export const getImageUrl = (key: string) => {
-  return key
+  return key && import.meta.env.MODE !== 'development'
     ? `${import.meta.env.VITE_IMAGE_PREFIX_URL}/${key}`
     : 'https://placehold.co/600x400'
 }
@@ -81,4 +83,8 @@ export class NotFoundError extends Error {
     super('Not Found')
     this.name = 'NotFoundError'
   }
+}
+
+export const cn = (...inputs: ClassValue[]) => {
+  return twMerge(clsx(inputs))
 }
