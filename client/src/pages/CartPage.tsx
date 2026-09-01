@@ -21,8 +21,18 @@ const CartPage = () => {
   const queryClient = useQueryClient()
   const itemDelMutation = useMutation({
     mutationFn: (id: string) => delCartItem({ id }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: cartQuery.queryKey })
+    onMutate: async (id: string) => {
+      await queryClient.cancelQueries({ queryKey: cartQuery.queryKey })
+      const previousCart = queryClient.getQueryData(cartQuery.queryKey)
+      queryClient.setQueryData(cartQuery.queryKey, (prev) =>
+        prev?.filter((item) => item.id !== id)
+      )
+      return { previousCart }
+    },
+    onError: (_err, _id, context) => {
+      if (context?.previousCart) {
+        queryClient.setQueryData(cartQuery.queryKey, context.previousCart)
+      }
     }
   })
 
