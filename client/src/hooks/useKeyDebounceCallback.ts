@@ -1,14 +1,16 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export const useKeyDebounceCallback = <Args extends unknown[]>(
   callback: (key: string, ...args: Args) => void,
   timeout: number
 ) => {
   const timers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map())
+  const [hasPending, setHasPending] = useState(false)
 
   useEffect(() => {
     return () => {
-      cancelAll()
+      timers.current.forEach((timer) => clearTimeout(timer))
+      timers.current.clear()
     }
   }, [])
 
@@ -19,11 +21,13 @@ export const useKeyDebounceCallback = <Args extends unknown[]>(
     }
 
     const newTimer = setTimeout(() => {
-      callback(key, ...args)
       timers.current.delete(key)
+      setHasPending(timers.current.size > 0)
+      callback(key, ...args)
     }, timeout)
 
     timers.current.set(key, newTimer)
+    setHasPending(true)
   }
 
   const cancel = (key: string) => {
@@ -31,12 +35,14 @@ export const useKeyDebounceCallback = <Args extends unknown[]>(
     if (!timer) return
     clearTimeout(timer)
     timers.current.delete(key)
+    setHasPending(timers.current.size > 0)
   }
 
-  function cancelAll() {
+  const cancelAll = () => {
     timers.current.forEach((timer) => clearTimeout(timer))
     timers.current.clear()
+    setHasPending(false)
   }
 
-  return { debounce, cancel, cancelAll, pendingCount: timers.current.size }
+  return { debounce, cancel, cancelAll, hasPending }
 }

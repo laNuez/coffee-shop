@@ -40,12 +40,13 @@ export const productsLoader =
   (queryClient: QueryClient) =>
   async ({ request }: LoaderFunctionArgs) => {
     const searchParams = new URL(request.url).searchParams
-    const category = searchParams.get('category')
+    const category = searchParams.get('category') || undefined
 
-    const products = await queryClient.ensureQueryData(
-      productsQuery(category || undefined)
-    )
-    const categories = await queryClient.ensureQueryData(categoriesQuery)
+    const [products, categories] = await Promise.all([
+      queryClient.ensureQueryData(productsQuery(category)),
+      queryClient.ensureQueryData(categoriesQuery)
+    ])
+
     return { products, categories }
   }
 

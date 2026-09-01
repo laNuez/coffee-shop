@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useSuspenseQueries } from '@tanstack/react-query'
 import { CategoriesResponse, ProductsResponse } from '../lib/api'
 import { Product } from '../components/Product'
 import { Link, useSearchParams } from 'react-router'
@@ -55,13 +55,11 @@ const ProductsSide = ({ products }: ProductsGridProps) => {
 
 const ProductsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const currentCategory = searchParams.get('category')
+  const currentCategory = searchParams.get('category') || undefined
 
-  const { data: products } = useSuspenseQuery(
-    productsQuery(currentCategory ?? '')
-  )
-
-  const { data: categories } = useSuspenseQuery(categoriesQuery)
+  const [{ data: products }, { data: categories }] = useSuspenseQueries({
+    queries: [productsQuery(currentCategory), categoriesQuery]
+  })
 
   const handleFilter = (category: string | null) => {
     setSearchParams(category ? { category } : {})

@@ -56,7 +56,7 @@ const CartPage = () => {
   const {
     debounce,
     cancel,
-    pendingCount: pendingQtyUpdateCount
+    hasPending: hasPendingDebounce
   } = useKeyDebounceCallback((id: string, safeQuantity: number) => {
     itemQuantityMutation({ id, quantity: safeQuantity, optimistic: false })
   }, 250)
@@ -232,16 +232,20 @@ const CartPage = () => {
           <h2 className="mb-4 text-xl font-bold">Order Summary</h2>
           <div className="flex justify-between">
             <span className="mr-10">Subtotal</span>
-            <span className="w-18 text-left">{formatCents(totalPrice)}</span>
+            <span className="w-20 text-right tabular-nums">
+              {formatCents(totalPrice)}
+            </span>
           </div>
           <div className="flex justify-between">
             <span>Shipping</span>
-            <span className="w-20 pr-2 text-right">Free</span>
+            <span className="w-20 text-right">Free</span>
           </div>
           <hr />
           <div className="flex justify-between">
             <span>Total</span>
-            <span className="w-18 text-left">{formatCents(totalPrice)}</span>
+            <span className="w-20 text-right tabular-nums">
+              {formatCents(totalPrice)}
+            </span>
           </div>
           <button
             className="btn btn-primary w-full"
@@ -250,7 +254,7 @@ const CartPage = () => {
               checkoutMutation.isPending ||
               !cart.length ||
               isUpdatingQuantity ||
-              pendingQtyUpdateCount > 0 ||
+              hasPendingDebounce ||
               itemDelMutation.isPending
             }
           >
