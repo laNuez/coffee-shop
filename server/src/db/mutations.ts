@@ -5,6 +5,7 @@ import {
   orderItemsTable,
   ordersTable,
   productsTable,
+  stripeEventsTable,
   usersTable,
   type InsertCartParams,
   type insertOrder,
@@ -12,6 +13,7 @@ import {
   type insertProduct,
   type insertUser,
   type patchProductDB,
+  type stripeEventInsert,
   type updateCartItem as updateCartItemType,
   type updateOrderItem as updateOrderItemType,
   type updateOrder as updateOrderType
@@ -155,4 +157,14 @@ export const updateOrderItem = async (data: updateOrderItemType) => {
   }
 
   return row
+}
+
+export const insertStripeEvent = async (data: stripeEventInsert) => {
+  return await db
+    .insert(stripeEventsTable)
+    .values(data)
+    .onConflictDoNothing()
+    .returning({
+      id: stripeEventsTable.id
+    })
 }

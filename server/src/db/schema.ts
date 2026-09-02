@@ -92,6 +92,14 @@ export const orderItemsTable = sqliteTable('order_items_table', {
   price: int().notNull()
 })
 
+export const stripeEventsTable = sqliteTable('stripe_events_table', {
+  id: text().primaryKey().notNull().unique(),
+  type: text().notNull(),
+  processedAt: text()
+    .notNull()
+    .default(sql`(current_timestamp)`)
+})
+
 export const userSelectSchema = createSelectSchema(usersTable)
 export const userInsertSchema = createInsertSchema(usersTable, {
   email: (schema) => schema.email().nonoptional(),
@@ -197,6 +205,8 @@ export type updateOrder = z.infer<typeof orderUpdateSchema>
 export type insertOrderItem = z.infer<typeof orderItemInsertSchema>
 
 export type updateOrderItem = z.infer<typeof orderItemUpdateSchema>
+
+export type stripeEventInsert = typeof stripeEventsTable.$inferInsert
 
 export const cartItemsRelations = relations(cartItemsTable, ({ one }) => ({
   customer: one(usersTable, {

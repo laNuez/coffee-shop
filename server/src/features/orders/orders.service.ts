@@ -1,6 +1,7 @@
 import {
   createOrder,
   createOrderItem,
+  insertStripeEvent,
   updateOrderById
 } from '@server/db/mutations'
 import {
@@ -73,7 +74,7 @@ const itemsPayload = (
           description: e.product.description,
           images: [`${ENV.IMAGE_PREFIX}/${e.product.image}`]
         },
-        unit_amount: e.product.price
+        unit_amount: e.price
       },
       quantity: e.quantity
     }
@@ -91,6 +92,12 @@ const handleWebhook = async (
   webhook_secret = ENV.STRIPE_WEBHOOK_SECRET
 ) => {
   const event = await stripeService.webhook(body, signature, webhook_secret)
+
+  const [row] = await insertStripeEvent({
+    id: event.id,
+    type: event.type
+  })
+  if (!row) return
 
   switch (event.type) {
     case 'payment_intent.created':
