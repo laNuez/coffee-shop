@@ -9,34 +9,35 @@ import type { patchProduct, patchProductDB } from '@server/db/schema'
 import { deleteImage, uploadImage } from './images.storage'
 import { HTTPException } from 'hono/http-exception'
 
-// TODO: delete images if something fails
-
 const update = async (id: string, data: patchProduct) => {
-  const toUpload = (file: File | undefined): file is File => Boolean(file)
-
   const { image, ...rest } = data
 
   const oldProduct = await getProductById(id)
   if (!oldProduct) throw new HTTPException(404, { message: '404 Not found' })
 
-  const imageKey = oldProduct.image
   let newImageKey: string | undefined
 
-  if (toUpload(data.image)) {
-    newImageKey = await uploadImage(data.image)
+  if (image) {
+    newImageKey = await uploadImage(image)
     if (!newImageKey) throw Error('Image upload failed')
   }
 
   const p: patchProductDB = {
     ...rest,
-    ...(image && { image: newImageKey })
+    ...(newImageKey && { image: newImageKey })
   }
 
-  const product = await updateProduct(id, p)
+  let product: Awaited<ReturnType<typeof updateProduct>>
 
-  if (imageKey && newImageKey) {
-    await deleteImage(imageKey)
+  try {
+    product = await updateProduct(id, p)
+  } catch (error) {
+    if (newImageKey) await deleteImage(newImageKey)
+
+    throw error
   }
+
+  if (newImageKey) await deleteImage(oldProduct.image)
 
   return product
 }
@@ -50,7 +51,7 @@ const remove = async (id: string) => {
   if (hasOrders) {
     await softDeleteProduct(id)
   } else {
-    await Promise.all([await deleteProduct(id), await deleteImage(row.image)])
+    await Promise.all([deleteProduct(id), deleteImage(row.image)])
   }
 
   await deleteFromAllCarts(id)
