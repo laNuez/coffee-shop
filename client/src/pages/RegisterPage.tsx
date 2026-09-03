@@ -1,10 +1,11 @@
-import { FormEvent } from 'react'
+import { FormEvent, useEffect } from 'react'
 import { useInput } from '../hooks/useInput'
 import { Link, useNavigate } from 'react-router'
 import { useMutation } from '@tanstack/react-query'
 import { register } from '../lib/api'
 import { XIcon } from 'lucide-react'
 import { ApiError } from '../util/util'
+import { useUserStore } from '../stores/userStore'
 
 const RegisterPage = () => {
   const username = useInput('')
@@ -15,6 +16,11 @@ const RegisterPage = () => {
     password.value !== confirmPassword.value ? 'Password must match' : ''
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const user = useUserStore.getState().user
+    if (user) navigate('/')
+  }, [navigate])
 
   const registerMutation = useMutation<unknown, ApiError>({
     mutationFn: () => register(username.value, email.value, password.value),

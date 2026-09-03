@@ -1,4 +1,4 @@
-import { FormEvent } from 'react'
+import { FormEvent, useEffect } from 'react'
 import { useInput } from '../hooks/useInput'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { useUserStore } from '../stores/userStore'
@@ -14,6 +14,11 @@ const LoginPage = () => {
   const fetchUser = useUserStore((state) => state.fetchUser)
   const navigate = useNavigate()
   const { state } = useLocation()
+
+  useEffect(() => {
+    const user = useUserStore.getState().user
+    if (user) navigate('/')
+  }, [navigate])
 
   const loginMutation = useMutation<
     unknown,

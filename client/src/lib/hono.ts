@@ -6,8 +6,9 @@ const fetcher = async (request: Request | string | URL, init?: RequestInit) => {
   const response = await fetch(request, init)
 
   const ME_ENDPOINT = new URL(response.url).pathname === '/api/me'
+  const isLoginRequest = new URL(response.url).pathname === '/api/login'
 
-  if (response.status === 401 && !ME_ENDPOINT) {
+  if (response.status === 401 && !ME_ENDPOINT && !isLoginRequest) {
     throw new UnauthorizedError()
   }
 
